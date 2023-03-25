@@ -8,6 +8,8 @@ using UnityEngine.Serialization;
 public class TransformManipulatorManager : MonoBehaviour
 {   
     [SerializeField] private RuntimeTransformHandle _transformHandle;
+
+    private Camera _mainCamera;
     
     private void Start()
     {
@@ -15,28 +17,26 @@ public class TransformManipulatorManager : MonoBehaviour
         {
             _transformHandle = GameObject.FindGameObjectWithTag("TransformHandler").GetComponent<RuntimeTransformHandle>();
         }
+
+        if (_mainCamera == null)
+        {
+            _mainCamera = Camera.main;
+
+        }
     }
 
     private void Update()
     {
-        if (!_transformHandle.gameObject.activeSelf)
+        if (!_transformHandle.gameObject.activeSelf) //If the transform handle is not active we can select whatever
         {
             CheckForSelectedObject();
-            Debug.Log("Dont need to check hovering shit");
         }
-        else if(_transformHandle.gameObject.activeSelf && !MouseHoveringOverHandle())
+        else if(_transformHandle.gameObject.activeSelf && !MouseHoveringOverHandle()) //If the transform handle is active and the mouse is not hovering over a handle
         {
-            Debug.Log("need to check hovering shit");
             CheckForSelectedObject();
         }
-        
-
-        
-        
         
         TransformInput();
-        
-        
     }
 
     private void TransformInput()
@@ -64,11 +64,14 @@ public class TransformManipulatorManager : MonoBehaviour
         }
     }
     
+    /// <summary>
+    /// Checks if the user has clicked on a selectable object and if so enables the transform handle
+    /// </summary>
     private void CheckForSelectedObject()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
@@ -85,6 +88,9 @@ public class TransformManipulatorManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Disables the transform handle and resets variables
+    /// </summary>
     private void DisableTransformHandler()
     {
         _transformHandle.target = null;
@@ -92,16 +98,24 @@ public class TransformManipulatorManager : MonoBehaviour
         _transformHandle.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// Checks if the mouse is hovering over a handle, regardless of objects in between
+    /// </summary>
+    /// <returns> True if hovering over a handle, false if not </returns>
     private bool MouseHoveringOverHandle()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
+        Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit[] hits = Physics.RaycastAll(ray);
 
-        if (Physics.Raycast(ray, out hit))
+        if (hits.Length == 0)
+            return false;
+
+        foreach (RaycastHit hit in hits)
         {
-            if (hit.collider.gameObject.GetComponentInParent<HandleBase>())
+            HandleBase handle = hit.collider.gameObject.GetComponentInParent<HandleBase>();
+            
+            if (handle != null)
             {
-                Debug.Log("shit is hovering over");
                 return true;
             }
         }

@@ -21,6 +21,17 @@ public class CustomNetworkManager : NetworkManager
             player.ConnectionID = conn.connectionId;
             player.PlayerID = GamePlayers.Count + 1;
 
+            if (NetworkServer.active)
+            {
+                player.PlayerType = PlayerType.DungeonMaster;
+            }
+            else
+            {
+                player.PlayerType = PlayerType.Player;
+            }
+            
+            
+
             NetworkServer.AddPlayerForConnection(conn, player.gameObject);
         }
     }

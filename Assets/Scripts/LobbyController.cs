@@ -24,15 +24,12 @@ public class LobbyController : MonoBehaviour
     public ulong lobbyID;
     public bool PlayerItemCreated = false;
     
-    
-    
-    
     private List<PlayerListItem> PlayerListItems = new List<PlayerListItem>();
-        
-        
-        
-        
+
     public PlayerObjectController LocalPlayerController;
+    
+    [SerializeField] private GameObject startGameButton;
+    
     
     private CustomNetworkManager networkManager;
     private CustomNetworkManager NetworkManager
@@ -61,7 +58,7 @@ public class LobbyController : MonoBehaviour
     {
         NetworkManager.GamePlayers.CollectionChanged -= UpdatePlayerList;
     }
-
+    
     public void UpdateLobbyName()
     {
         lobbyID = NetworkManager.GetComponent<SteamLobby>().lobbyID;
@@ -92,6 +89,11 @@ public class LobbyController : MonoBehaviour
         {
             UpdatePlayerItem();
             Debug.Log("Updated Player Item");
+        }
+        
+        if(LocalPlayerController.PlayerType == PlayerType.DungeonMaster)
+        {
+            startGameButton.SetActive(true);
         }
         
     }

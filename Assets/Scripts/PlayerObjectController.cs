@@ -10,7 +10,10 @@ public class PlayerObjectController : NetworkBehaviour
     [SyncVar] public int PlayerID;
     [SyncVar] public ulong PlayerSteamID;
     [SyncVar(hook = nameof(PlayerNameUpdate))] public string PlayerName;
-
+    
+    [SyncVar] public PlayerType PlayerType;
+    
+    
     private CustomNetworkManager networkManager;
     
     private CustomNetworkManager NetworkManager

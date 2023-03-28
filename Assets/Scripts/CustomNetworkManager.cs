@@ -6,6 +6,7 @@ using UnityEngine;
 using Mirror;
 using UnityEngine.SceneManagement;
 using Steamworks;
+using System.Linq;
 
 public class CustomNetworkManager : NetworkManager
 {
@@ -34,5 +35,19 @@ public class CustomNetworkManager : NetworkManager
 
             NetworkServer.AddPlayerForConnection(conn, player.gameObject);
         }
+    }
+
+    public override void Start()
+    {
+        base.Start();
+        List<GameObject> placeableObjects = new List<GameObject>();
+        
+        placeableObjects = Resources.LoadAll<GameObject>("Prefabs").ToList();
+
+        foreach (GameObject prefab in placeableObjects)
+        {
+            spawnPrefabs.Add(prefab);
+        }
+        
     }
 }

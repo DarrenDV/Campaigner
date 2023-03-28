@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 public class ObjectSpawner : MonoBehaviour
@@ -22,6 +23,7 @@ public class ObjectSpawner : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.J))
         {
             GameObject go = Instantiate(builder.placeableObjectsDict["Cube"]);
+            NetworkServer.Spawn(go);
             go.transform.position = new Vector3(0, 0, 0);
             go.transform.SetParent(parent.transform);
             go.tag = "Selectable";
@@ -29,6 +31,7 @@ public class ObjectSpawner : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.K))
         {
             GameObject go = Instantiate(builder.placeableObjectsDict["Capsule"]);
+            NetworkServer.Spawn(go);
             go.transform.SetParent(parent.transform);
             go.transform.position = new Vector3(0, 0, 0);
             go.tag = "Selectable";
@@ -36,6 +39,7 @@ public class ObjectSpawner : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.L))
         {
             GameObject go = Instantiate(builder.placeableObjectsDict["Sphere"]);
+            NetworkServer.Spawn(go);
             go.transform.SetParent(parent.transform);
             go.transform.position = new Vector3(0, 0, 0);
             go.tag = "Selectable";

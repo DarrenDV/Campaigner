@@ -32,14 +32,14 @@ public class PlayerObjectController : NetworkBehaviour
 
     public override void OnStartClient()
     {
-        NetworkManager.Players.Add(this);
+        NetworkManager.GamePlayers.Add(this);
         LobbyController.Instance.UpdateLobbyName();
         //LobbyController.Instance.UpdatePlayerList();
     }
 
     public override void OnStopClient()
     {
-        NetworkManager.Players.Remove(this);
+        NetworkManager.GamePlayers.Remove(this);
         //LobbyController.Instance.UpdatePlayerList();
     }
     
@@ -61,8 +61,8 @@ public class PlayerObjectController : NetworkBehaviour
             //LobbyController.Instance.UpdatePlayerList();
             
             //Extremely scuffed way to force a refresh of the player list
-            //NetworkManager.Players.Add(this);
-            //NetworkManager.Players.RemoveAt(NetworkManager.Players.Count - 1);
+            NetworkManager.GamePlayers.Add(this);
+            NetworkManager.GamePlayers.RemoveAt(NetworkManager.GamePlayers.Count - 1);
         }
     }
     

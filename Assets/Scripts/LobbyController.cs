@@ -99,10 +99,6 @@ public class LobbyController : MonoBehaviour
                 startGameButton.SetActive(true);
             }
         }
-        else
-        {
-
-        }
     }
 
     // public void FindLocalPlayer()

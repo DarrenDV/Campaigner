@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
 public class SaveAndLoadStuff : MonoBehaviour
@@ -79,6 +80,8 @@ public class SaveAndLoadStuff : MonoBehaviour
         foreach (GameObjectData gameObjectData in mapSceneData.gameObjects)
         {
             GameObject go = Instantiate(Builder.placeableObjectsDict[gameObjectData.name], gameObjectData.position, gameObjectData.rotation);
+            go.name = gameObjectData.name;
+            NetworkServer.Spawn(go);
             go.transform.localScale = gameObjectData.scale;
             go.transform.SetParent(parent.transform);
             go.tag = "Selectable";

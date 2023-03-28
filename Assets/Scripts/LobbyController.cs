@@ -1,11 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using UnityEngine;
 using Mirror;
 using Steamworks;
 using UnityEngine.UI;
 using System.Linq;
 using TMPro;
+using UnityEngine.Rendering;
 
 public class LobbyController : MonoBehaviour
 {
@@ -19,7 +23,15 @@ public class LobbyController : MonoBehaviour
     
     public ulong lobbyID;
     public bool PlayerItemCreated = false;
+    
+    
+    
+    
     private List<PlayerListItem> PlayerListItems = new List<PlayerListItem>();
+        
+        
+        
+        
     public PlayerObjectController LocalPlayerController;
     
     private CustomNetworkManager networkManager;
@@ -40,20 +52,24 @@ public class LobbyController : MonoBehaviour
         }
     }
 
+    private void OnEnable()
+    {
+        NetworkManager.Players.CollectionChanged += UpdatePlayerList;
+    }
+    
+    private void OnDisable()
+    {
+        NetworkManager.Players.CollectionChanged -= UpdatePlayerList;
+    }
+
     public void UpdateLobbyName()
     {
         lobbyID = NetworkManager.GetComponent<SteamLobby>().lobbyID;
         lobbyText.text = SteamMatchmaking.GetLobbyData(new CSteamID(lobbyID), "name");
     }
 
-    public void UpdatePlayerList()
+    public void UpdatePlayerList(object sender, NotifyCollectionChangedEventArgs e)
     {
-        if(NetworkManager.Players.Count == 0)
-        {
-            Invoke(nameof(UpdatePlayerList), 0.1f);
-            return;
-        }
-        
         if (!PlayerItemCreated)
         {
             CreateHostPlayerItem();
@@ -75,6 +91,30 @@ public class LobbyController : MonoBehaviour
         }
         
     }
+    
+    // public void UpdatePlayerList()
+    // {
+    //     if (!PlayerItemCreated)
+    //     {
+    //         CreateHostPlayerItem();
+    //     }
+    //     
+    //     if(PlayerListItems.Count < NetworkManager.Players.Count)
+    //     {
+    //         CreateClientPlayerItem();
+    //     }
+    //
+    //     if(PlayerListItems.Count > NetworkManager.Players.Count)
+    //     {
+    //         RemovePlayerItem();
+    //     }
+    //     
+    //     if(PlayerListItems.Count == NetworkManager.Players.Count)
+    //     {
+    //         UpdatePlayerItem();
+    //     }
+    //     
+    // }
 
     public void FindLocalPlayer()
     {
@@ -84,11 +124,9 @@ public class LobbyController : MonoBehaviour
 
     public void CreateHostPlayerItem()
     {
-        Debug.Log(NetworkManager.Players.Count);
         foreach (PlayerObjectController player in NetworkManager.Players)
         {
-            Debug.Log("Aids");
-            
+
             GameObject playerItem = Instantiate(PlayerListItemPrefab);
             PlayerListItem playerListItem = playerItem.GetComponent<PlayerListItem>();
             

@@ -70,39 +70,46 @@ public class LobbyController : MonoBehaviour
         if (!PlayerItemCreated)
         {
             CreateHostPlayerItem();
-            Debug.Log("Created Host Player Item");
         }
         
         if(PlayerListItems.Count < NetworkManager.GamePlayers.Count)
         {
             CreateClientPlayerItem();
-            Debug.Log("Created Client Player Item");
         }
 
         if(PlayerListItems.Count > NetworkManager.GamePlayers.Count)
         {
             RemovePlayerItem();
-            Debug.Log("Removed Player Item");
         }
         
         if(PlayerListItems.Count == NetworkManager.GamePlayers.Count)
         {
             UpdatePlayerItem();
-            Debug.Log("Updated Player Item");
         }
         
-        if(LocalPlayerController.PlayerType == PlayerType.DungeonMaster)
-        {
-            startGameButton.SetActive(true);
-        }
-        
+        //UpdateUIElements();
     }
-    
-    public void FindLocalPlayer()
+
+    public void UpdateUIElements()
     {
-        LocalPlayerObject = GameObject.Find("LocalGamePlayer"); //TODO Change to SteamFriends.GetPersonaName()
-        LocalPlayerController = LocalPlayerObject.GetComponent<PlayerObjectController>();
+        if (LocalPlayerController != null)
+        {
+            if(LocalPlayerController.PlayerType == PlayerType.DungeonMaster)
+            {
+                startGameButton.SetActive(true);
+            }
+        }
+        else
+        {
+
+        }
     }
+
+    // public void FindLocalPlayer()
+    // {
+    //     LocalPlayerObject = GameObject.Find("LocalGamePlayer"); //TODO Change to SteamFriends.GetPersonaName()
+    //     LocalPlayerController = LocalPlayerObject.GetComponent<PlayerObjectController>();
+    // }
 
     public void CreateHostPlayerItem()
     {
@@ -111,8 +118,7 @@ public class LobbyController : MonoBehaviour
 
             GameObject playerItem = Instantiate(PlayerListItemPrefab);
             PlayerListItem playerListItem = playerItem.GetComponent<PlayerListItem>();
-            Debug.Log("CreateHostPlayer Player Name: " + player.PlayerName);
-            
+
             playerListItem.PlayerName = player.PlayerName;
             playerListItem.PlayerSteamID = player.PlayerSteamID;
             playerListItem.ConnectionID = player.ConnectionID;
@@ -137,8 +143,6 @@ public class LobbyController : MonoBehaviour
                 PlayerListItem playerListItem = playerItem.GetComponent<PlayerListItem>();
             
                 playerListItem.PlayerName = player.PlayerName;
-                Debug.Log("CreateClientPlayer Player Name: " + playerListItem.PlayerName);
-                
                 playerListItem.PlayerSteamID = player.PlayerSteamID;
                 playerListItem.ConnectionID = player.ConnectionID;
                 playerListItem.SetPlayerValues();

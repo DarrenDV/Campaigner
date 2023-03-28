@@ -22,7 +22,7 @@ public class CustomNetworkManager : NetworkManager
             player.ConnectionID = conn.connectionId;
             player.PlayerID = GamePlayers.Count + 1;
 
-            if (NetworkServer.active)
+            if (player.PlayerID == 1) //Only the host is the dungeon master
             {
                 player.PlayerType = PlayerType.DungeonMaster;
             }

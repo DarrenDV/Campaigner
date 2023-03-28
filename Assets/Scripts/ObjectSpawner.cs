@@ -22,7 +22,9 @@ public class ObjectSpawner : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.J))
         {
-            GameObject go = Instantiate(builder.placeableObjectsDict["Cube"]);
+            string name = "Cube";
+            GameObject go = Instantiate(builder.placeableObjectsDict[name]);
+            go.name = name;
             NetworkServer.Spawn(go);
             go.transform.position = new Vector3(0, 0, 0);
             go.transform.SetParent(parent.transform);
@@ -30,7 +32,9 @@ public class ObjectSpawner : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.K))
         {
-            GameObject go = Instantiate(builder.placeableObjectsDict["Capsule"]);
+            string name = "Capsule";
+            GameObject go = Instantiate(builder.placeableObjectsDict[name]);
+            go.name = name;
             NetworkServer.Spawn(go);
             go.transform.SetParent(parent.transform);
             go.transform.position = new Vector3(0, 0, 0);
@@ -38,7 +42,9 @@ public class ObjectSpawner : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.L))
         {
-            GameObject go = Instantiate(builder.placeableObjectsDict["Sphere"]);
+            string name = "Sphere";
+            GameObject go = Instantiate(builder.placeableObjectsDict[name]);
+            go.name = name;
             NetworkServer.Spawn(go);
             go.transform.SetParent(parent.transform);
             go.transform.position = new Vector3(0, 0, 0);

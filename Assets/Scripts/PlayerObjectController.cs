@@ -29,7 +29,9 @@ public class PlayerObjectController : NetworkBehaviour
     {
         CmdUpdatePlayerName(SteamFriends.GetPersonaName());
         gameObject.name = "LocalGamePlayer"; //TODO Change to SteamFriends.GetPersonaName()
-        LobbyController.Instance.FindLocalPlayer();
+        //LobbyController.Instance.FindLocalPlayer();
+        LobbyController.Instance.LocalPlayerController = this;
+        LobbyController.Instance.UpdateUIElements();
         LobbyController.Instance.UpdateLobbyName();
     }
 

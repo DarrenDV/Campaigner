@@ -3,12 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 using Mirror;
 using UnityEngine;
+using TMPro;
+
 
 public class SaveAndLoadStuff : MonoBehaviour
 {
     [SerializeField] private SaveManager saveManager;
     [SerializeField] private GameObject parent;
     [SerializeField] private Builder Builder;
+
+    [SerializeField] private GameObject SaveUI;
+    [SerializeField] private TMP_InputField inputField;
+    
+    
+    [SerializeField] private GameObject LoadUI;
+    [SerializeField] private TMP_Dropdown dropdown;
+
+    private bool openMenu;
  
     private string version = "0.0.1";   
     
@@ -34,24 +45,35 @@ public class SaveAndLoadStuff : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.O))
+        if (!openMenu)
         {
-            Save();
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                SaveUI.SetActive(true);
+            }
+            else if (Input.GetKeyDown(KeyCode.P))
+            {
+                LoadUI.SetActive(true);
+            }
         }
-        else if (Input.GetKeyDown(KeyCode.P))
-        {
-            Load();
-        }
-
     }
 
-    private void Save()
+    public void SaveButtonClick()
+    {
+        Save(inputField.text);
+        inputField.text = "";
+        SaveUI.SetActive(false);
+        openMenu = false;
+    }
+
+
+    private void Save(string mapName)
     {
         MapSceneData mapSceneData = new MapSceneData();
-        mapSceneData.mapName = "Map1";
+        mapSceneData.mapName = mapName;
         mapSceneData.version = version;
 
-        foreach (GameObject child in GetAllChildren(parent))
+        foreach (GameObject child in SavingUtils.GetAllChildren(parent))
         {
             GameObjectData gameObjectData = new GameObjectData();
             gameObjectData.name = child.name;
@@ -63,10 +85,23 @@ public class SaveAndLoadStuff : MonoBehaviour
         
         saveManager.Save(mapSceneData);
     }
-
-    private void Load()
+    
+    public void LoadButtonClicked()
     {
-        MapSceneData mapSceneData = saveManager.Load();
+        if(dropdown.value == 0)
+        {
+            Debug.Log("Please select a save file");
+            return;
+        }
+        
+        Load(dropdown.options[dropdown.value].text);
+        LoadUI.SetActive(false);
+        openMenu = false;
+    }
+
+    private void Load(string fileName)
+    {
+        MapSceneData mapSceneData = saveManager.Load(fileName);
         
         if (mapSceneData == null)
         {
@@ -87,16 +122,5 @@ public class SaveAndLoadStuff : MonoBehaviour
             go.tag = "Selectable";
 
         }
-    }
-    
-    private List<GameObject> GetAllChildren(GameObject parent)
-    {
-        List<GameObject> children = new List<GameObject>();
-        foreach (Transform child in parent.transform)
-        {
-            children.Add(child.gameObject);
-        }
-
-        return children;
     }
 }

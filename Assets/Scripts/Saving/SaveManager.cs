@@ -7,7 +7,7 @@ using UnityEngine.Serialization;
 
 public class SaveManager : MonoBehaviour
 {
-    [SerializeField] private string mapName;
+
     
     public void Save(MapSceneData mapSceneData)
     {
@@ -19,9 +19,9 @@ public class SaveManager : MonoBehaviour
         File.WriteAllText(path, json);
     }
     
-    public MapSceneData Load()
+    public MapSceneData Load(string fileName)
     {
-        string path = Application.dataPath + "/SaveData/" + mapName + ".json";
+        string path = Application.dataPath + "/SaveData/" + fileName + ".json";
         string json = "";
 
         if (!File.Exists(path))
@@ -32,6 +32,6 @@ public class SaveManager : MonoBehaviour
         json = File.ReadAllText(path);
         MapSceneData mapSceneData = JsonUtility.FromJson<MapSceneData>(json);
         return mapSceneData;
-        
     }
+    
 }

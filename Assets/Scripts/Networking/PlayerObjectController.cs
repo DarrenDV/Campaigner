@@ -31,17 +31,25 @@ public class PlayerObjectController : NetworkBehaviour
         CmdUpdatePlayerName(SteamFriends.GetPersonaName());
         name = SteamFriends.GetPersonaName();
         gameObject.name = "LocalGamePlayer"; //TODO Change to SteamFriends.GetPersonaName() -- Actually maybe not 
+
+
+        if (LobbyController.Instance != null)
+        {
+            LobbyController.Instance.LocalPlayerController = this;
         
-        LobbyController.Instance.LocalPlayerController = this;
-        
-        LobbyController.Instance.UpdateUIElements();
-        LobbyController.Instance.UpdateLobbyName();
+            LobbyController.Instance.UpdateUIElements();
+            LobbyController.Instance.UpdateLobbyName();
+        }
     }
 
     public override void OnStartClient()
     {
         CustomNetworkManager.Instance.GamePlayers.Add(this);
-        LobbyController.Instance.UpdateLobbyName();
+
+        if (LobbyController.Instance != null)
+        {
+            LobbyController.Instance.UpdateLobbyName();
+        }
     }
 
     public override void OnStopClient()

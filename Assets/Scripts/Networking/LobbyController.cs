@@ -102,7 +102,10 @@ public class LobbyController : MonoBehaviour
         {
             if(LocalPlayerController.PlayerType == PlayerType.DungeonMaster)
             {
-                startGameButton.SetActive(true);
+                if (startGameButton != null)
+                {
+                    startGameButton.SetActive(true);    
+                }
             }
         }
     }

@@ -23,39 +23,41 @@ public class CustomNetworkManager : NetworkManager
     public ObservableCollection<PlayerObjectController> GamePlayers = new ObservableCollection<PlayerObjectController>();
     
     [SerializeField] public PlayerObjectController localPlayer; //The local player object can be used to get a direct reference to their rights
-    
-    
+
+
+    private void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(this);
+        }
+    }
     
     public override void OnServerAddPlayer(NetworkConnectionToClient conn) //This function is being called when a player joins a lobby.
     {
-        Debug.Log("OnServerAddPlayer");
-        if (SceneManager.GetActiveScene().name == "Lobby")
+        PlayerObjectController player = Instantiate(playerObjectController);
+        
+        player.PlayerSteamID = (ulong)SteamMatchmaking.GetLobbyMemberByIndex((CSteamID)SteamLobby.Instance.lobbyID, GamePlayers.Count);
+        player.ConnectionID = conn.connectionId;
+        player.PlayerID = GamePlayers.Count + 1;
+        
+        
+        if (player.PlayerID == 1) //Only the host is the dungeon master
         {
-            PlayerObjectController player = Instantiate(playerObjectController);
-            
-            DontDestroyOnLoad(player);
-            
-            player.PlayerSteamID = (ulong)SteamMatchmaking.GetLobbyMemberByIndex((CSteamID)SteamLobby.Instance.lobbyID, GamePlayers.Count);
-            player.ConnectionID = conn.connectionId;
-            player.PlayerID = GamePlayers.Count + 1;
-
-            if (player.PlayerID == 1) //Only the host is the dungeon master
-            {
-                player.PlayerType = PlayerType.DungeonMaster;
-            }
-            else
-            {
-                player.PlayerType = PlayerType.Player;
-            }
-            
-            //Check if the player is the local player and set the localPlayer variable
-            if (player.PlayerSteamID == SteamUser.GetSteamID().m_SteamID)
-            {
-                localPlayer = player;
-            }
-            
-            NetworkServer.AddPlayerForConnection(conn, player.gameObject);
+            player.PlayerType = PlayerType.DungeonMaster;
         }
+        else
+        {
+            player.PlayerType = PlayerType.Player;
+        }
+        
+        //Check if the player is the local player and set the localPlayer variable
+        if (player.PlayerSteamID == SteamUser.GetSteamID().m_SteamID)
+        {
+            localPlayer = player;
+        }
+        
+        NetworkServer.AddPlayerForConnection(conn, player.gameObject);
     }
 
     public override void Start() //TODO: Move this functionality somewhere else
@@ -71,7 +73,6 @@ public class CustomNetworkManager : NetworkManager
         }
         
     }
-
     
     //These 3 are just used to look at GamePlayers in the inspector
     private void OnEnable()

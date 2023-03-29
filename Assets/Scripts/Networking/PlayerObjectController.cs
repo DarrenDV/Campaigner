@@ -39,8 +39,13 @@ public class PlayerObjectController : NetworkBehaviour
         }
     }
     
+    
+    
     public override void OnStartAuthority()
     {
+        DontDestroyOnLoad(this);
+        
+        
         CmdUpdatePlayerName(SteamFriends.GetPersonaName());
         name = SteamFriends.GetPersonaName();
         gameObject.name = "LocalGamePlayer"; //TODO Change to SteamFriends.GetPersonaName()

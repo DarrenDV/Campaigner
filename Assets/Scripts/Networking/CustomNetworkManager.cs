@@ -17,6 +17,14 @@ public class CustomNetworkManager : NetworkManager
     
     public ObservableCollection<PlayerObjectController> GamePlayers = new ObservableCollection<PlayerObjectController>();
     
+    [SerializeField] public PlayerObjectController localPlayer;
+    
+    private void Awake()
+    {
+        //TODO Probably at some form of instance here
+    }
+    
+    
     public override void OnServerAddPlayer(NetworkConnectionToClient conn) //This function is being called when a player joins a lobby.
     {
         Debug.Log("OnServerAddPlayer");
@@ -34,6 +42,12 @@ public class CustomNetworkManager : NetworkManager
             else
             {
                 player.PlayerType = PlayerType.Player;
+            }
+            
+            //Check if the player is the local player
+            if (player.PlayerSteamID == SteamUser.GetSteamID().m_SteamID)
+            {
+                localPlayer = player;
             }
             
             NetworkServer.AddPlayerForConnection(conn, player.gameObject);

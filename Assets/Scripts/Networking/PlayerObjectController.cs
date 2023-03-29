@@ -14,7 +14,8 @@ public class PlayerObjectController : NetworkBehaviour
      *  Currently this class only works in the Lobby scene and is destroyed afterwards
      *
      *  TODO: Make this class work in the game scene as well    
-     *  TODO: Rework this class 
+     *  TODO: Rework this class
+     *  TODO: Decide if it's actually in need of a rework
      */
     
     
@@ -25,47 +26,27 @@ public class PlayerObjectController : NetworkBehaviour
     
     [SyncVar] public PlayerType PlayerType;
 
-    [SyncVar] public string name;
-    
-    
-    private CustomNetworkManager networkManager;
-    
-    private CustomNetworkManager NetworkManager
-    {
-        get
-        {
-            if (networkManager != null) { return networkManager; }
-            return networkManager = CustomNetworkManager.singleton as CustomNetworkManager;
-        }
-    }
-    
-    
-    
     public override void OnStartAuthority()
     {
-        DontDestroyOnLoad(this);
-        
-        
         CmdUpdatePlayerName(SteamFriends.GetPersonaName());
         name = SteamFriends.GetPersonaName();
-        gameObject.name = "LocalGamePlayer"; //TODO Change to SteamFriends.GetPersonaName()
-        //LobbyController.Instance.FindLocalPlayer();
+        gameObject.name = "LocalGamePlayer"; //TODO Change to SteamFriends.GetPersonaName() -- Actually maybe not 
+        
         LobbyController.Instance.LocalPlayerController = this;
+        
         LobbyController.Instance.UpdateUIElements();
         LobbyController.Instance.UpdateLobbyName();
     }
 
     public override void OnStartClient()
     {
-        NetworkManager.GamePlayers.Add(this);
+        CustomNetworkManager.Instance.GamePlayers.Add(this);
         LobbyController.Instance.UpdateLobbyName();
-        //LobbyController.Instance.UpdatePlayerList();
     }
 
     public override void OnStopClient()
     {
-        NetworkManager.GamePlayers.Remove(this);
-        //LobbyController.Instance.UpdatePlayerList();
+        CustomNetworkManager.Instance.GamePlayers.Remove(this);
     }
     
     [Command]
@@ -83,11 +64,9 @@ public class PlayerObjectController : NetworkBehaviour
 
         if (isClient)
         {
-            //LobbyController.Instance.UpdatePlayerList();
-            
             //Extremely scuffed way to force a refresh of the player list
-            NetworkManager.GamePlayers.Add(this);
-            NetworkManager.GamePlayers.RemoveAt(NetworkManager.GamePlayers.Count - 1);
+            CustomNetworkManager.Instance.GamePlayers.Add(this);
+            CustomNetworkManager.Instance.GamePlayers.RemoveAt(CustomNetworkManager.Instance.GamePlayers.Count - 1);
         }
     }
     

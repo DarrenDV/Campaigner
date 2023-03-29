@@ -16,7 +16,8 @@ public class LobbyController : MonoBehaviour
     /*
      *  This heap of junk is used to update the player list in the lobby scene
      *  It's absolute garbage and is the main reason why I want to rewrite the lobby system
-     * 
+     *
+     *  Whilst it is messy it's only used in 1 place so I don't know if I should bother
      */
     
     
@@ -26,8 +27,7 @@ public class LobbyController : MonoBehaviour
 
     public GameObject PlayerListViewContent;
     public GameObject PlayerListItemPrefab;
-    public GameObject LocalPlayerObject;
-    
+
     public ulong lobbyID;
     public bool PlayerItemCreated = false;
     
@@ -36,18 +36,7 @@ public class LobbyController : MonoBehaviour
     public PlayerObjectController LocalPlayerController;
     
     [SerializeField] private GameObject startGameButton;
-    
-    
-    private CustomNetworkManager networkManager;
-    private CustomNetworkManager NetworkManager
-    {
-        get
-        {
-            if (networkManager != null) { return networkManager; }
-            return networkManager = CustomNetworkManager.singleton as CustomNetworkManager;
-        }
-    }
-    
+
     private void Awake()
     {
         if (Instance == null)
@@ -58,17 +47,17 @@ public class LobbyController : MonoBehaviour
 
     private void OnEnable()
     {
-        NetworkManager.GamePlayers.CollectionChanged += UpdatePlayerList;
+        CustomNetworkManager.Instance.GamePlayers.CollectionChanged += UpdatePlayerList;
     }
     
     private void OnDisable()
     {
-        NetworkManager.GamePlayers.CollectionChanged -= UpdatePlayerList;
+        CustomNetworkManager.Instance.GamePlayers.CollectionChanged -= UpdatePlayerList;
     }
     
     public void UpdateLobbyName()
     {
-        lobbyID = NetworkManager.GetComponent<SteamLobby>().lobbyID;
+        lobbyID = CustomNetworkManager.Instance.GetComponent<SteamLobby>().lobbyID;
         lobbyText.text = SteamMatchmaking.GetLobbyData(new CSteamID(lobbyID), "name");
     }
 
@@ -89,17 +78,17 @@ public class LobbyController : MonoBehaviour
             CreateHostPlayerItem();
         }
         
-        if(PlayerListItems.Count < NetworkManager.GamePlayers.Count)
+        if(PlayerListItems.Count < CustomNetworkManager.Instance.GamePlayers.Count)
         {
             CreateClientPlayerItem();
         }
 
-        if(PlayerListItems.Count > NetworkManager.GamePlayers.Count)
+        if(PlayerListItems.Count > CustomNetworkManager.Instance.GamePlayers.Count)
         {
             RemovePlayerItem();
         }
         
-        if(PlayerListItems.Count == NetworkManager.GamePlayers.Count)
+        if(PlayerListItems.Count == CustomNetworkManager.Instance.GamePlayers.Count)
         {
             UpdatePlayerItem();
         }
@@ -128,7 +117,7 @@ public class LobbyController : MonoBehaviour
 
     public void CreateHostPlayerItem()
     {
-        foreach (PlayerObjectController player in NetworkManager.GamePlayers)
+        foreach (PlayerObjectController player in CustomNetworkManager.Instance.GamePlayers)
         {
 
             GameObject playerItem = Instantiate(PlayerListItemPrefab);
@@ -149,7 +138,7 @@ public class LobbyController : MonoBehaviour
 
     public void CreateClientPlayerItem()
     {
-        foreach (PlayerObjectController player in NetworkManager.GamePlayers)
+        foreach (PlayerObjectController player in CustomNetworkManager.Instance.GamePlayers)
         {
             if(!PlayerListItems.Any(b => b.ConnectionID == player.ConnectionID))
             {
@@ -172,7 +161,7 @@ public class LobbyController : MonoBehaviour
 
     public void UpdatePlayerItem()
     {
-        foreach (PlayerObjectController player in NetworkManager.GamePlayers)
+        foreach (PlayerObjectController player in CustomNetworkManager.Instance.GamePlayers)
         {
             foreach (PlayerListItem playerListItem in PlayerListItems)
             {
@@ -193,7 +182,7 @@ public class LobbyController : MonoBehaviour
         
         foreach (PlayerListItem playerListItem in PlayerListItems)
         {
-            if (!NetworkManager.GamePlayers.Any(b => b.ConnectionID == playerListItem.ConnectionID))
+            if (!CustomNetworkManager.Instance.GamePlayers.Any(b => b.ConnectionID == playerListItem.ConnectionID))
             {
                 playerListItemsToRemove.Add(playerListItem);
             }

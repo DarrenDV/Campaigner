@@ -24,6 +24,8 @@ public class PlayerObjectController : NetworkBehaviour
     [SyncVar(hook = nameof(PlayerNameUpdate))] public string PlayerName;
     
     [SyncVar] public PlayerType PlayerType;
+
+    [SyncVar] public string name;
     
     
     private CustomNetworkManager networkManager;
@@ -40,6 +42,7 @@ public class PlayerObjectController : NetworkBehaviour
     public override void OnStartAuthority()
     {
         CmdUpdatePlayerName(SteamFriends.GetPersonaName());
+        name = SteamFriends.GetPersonaName();
         gameObject.name = "LocalGamePlayer"; //TODO Change to SteamFriends.GetPersonaName()
         //LobbyController.Instance.FindLocalPlayer();
         LobbyController.Instance.LocalPlayerController = this;

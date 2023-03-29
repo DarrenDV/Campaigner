@@ -135,7 +135,6 @@ public class LobbyController : MonoBehaviour
             PlayerListItem playerListItem = playerItem.GetComponent<PlayerListItem>();
 
             playerListItem.PlayerName = player.PlayerName;
-            playerListItem.PlayerSteamID = player.PlayerSteamID;
             playerListItem.ConnectionID = player.ConnectionID;
             playerListItem.SetPlayerValues();
             
@@ -158,7 +157,6 @@ public class LobbyController : MonoBehaviour
                 PlayerListItem playerListItem = playerItem.GetComponent<PlayerListItem>();
             
                 playerListItem.PlayerName = player.PlayerName;
-                playerListItem.PlayerSteamID = player.PlayerSteamID;
                 playerListItem.ConnectionID = player.ConnectionID;
                 playerListItem.SetPlayerValues();
             
@@ -181,7 +179,6 @@ public class LobbyController : MonoBehaviour
                 if (playerListItem.ConnectionID == player.ConnectionID)
                 {
                     playerListItem.PlayerName = player.PlayerName;
-                    playerListItem.PlayerSteamID = player.PlayerSteamID;
                     playerListItem.ConnectionID = player.ConnectionID;
                     playerListItem.SetPlayerValues();
                 }

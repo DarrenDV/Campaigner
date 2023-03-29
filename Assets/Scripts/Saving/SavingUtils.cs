@@ -5,16 +5,21 @@ using UnityEngine;
 
 public class SavingUtils
 {
+    
+    /// <summary>
+    /// Get all the save files in the SaveData folder
+    /// </summary>
+    /// <returns>  List of save files </returns>
     public List<string> GetSaveFiles()
     {
         List<string> saveFiles = new List<string>();
-        string path = Application.dataPath + "/SaveData/";
+        string path = Application.dataPath + "/SaveData/"; //TODO: Change this to a constant or something else not hardcoded
         string[] files = Directory.GetFiles(path);
         foreach (string file in files)
         {
             string fileName = Path.GetFileNameWithoutExtension(file);
 
-            if (!fileName.Contains(".json"))
+            if (!fileName.Contains(".json"))    //TODO: Change this to a constant or something else not hardcoded
             {
                 saveFiles.Add(fileName);
             }
@@ -22,6 +27,11 @@ public class SavingUtils
         return saveFiles;
     }
     
+    /// <summary>
+    /// Gets all the children of a parent gameobject
+    /// </summary>
+    /// <param name="parent"> The parent GameObject children containing the children </param>
+    /// <returns> A list of gameobject that where children of the parent </returns>
     public static List<GameObject> GetAllChildren(GameObject parent)
     {
         List<GameObject> children = new List<GameObject>();

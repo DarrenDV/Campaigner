@@ -7,6 +7,16 @@ using UnityEngine.Serialization;
 
 public class TransformManipulatorManager : MonoBehaviour
 {   
+    /*
+     *  This class is used to manage the transform handles.
+     *  The player can select a gameobject and a transform handle will appear. The player can then move, rotate or scale the object.
+     *  The player currently is not able to select multiple objects at once. I might want to change this later on however.
+     *  
+     *  A bunch of code is semi-hardcoded, this is because I am not sure how I want to implement this yet.
+     */
+    
+    
+    
     [SerializeField] private RuntimeTransformHandle _transformHandle;
 
     private Camera _mainCamera;

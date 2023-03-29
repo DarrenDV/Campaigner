@@ -5,6 +5,12 @@ using TMPro;
 
 public class LoadingDropdown : MonoBehaviour
 {
+    
+    /*
+     *  Dropdown for selecting a save file to load
+     *  Will later switch to some form of panel view thing because this is ugly
+     */
+    
     private void Start()
     {
         //Create a dropdown option 

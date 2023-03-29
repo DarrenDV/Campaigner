@@ -6,6 +6,18 @@ using Steamworks;
 
 public class PlayerObjectController : NetworkBehaviour
 {
+    /*
+     *  This class is the "Local Player" object containing data for the local player
+     *  The main goal of this class is to store data about the player.
+     *  This data will be used for interactions in the game and determining what the player can do.
+     *
+     *  Currently this class only works in the Lobby scene and is destroyed afterwards
+     *
+     *  TODO: Make this class work in the game scene as well    
+     *  TODO: Rework this class 
+     */
+    
+    
     [SyncVar] public int ConnectionID;
     [SyncVar] public int PlayerID;
     [SyncVar] public ulong PlayerSteamID;

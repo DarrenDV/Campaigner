@@ -6,6 +6,13 @@ using UnityEngine;
 
 public class ObjectSpawner : MonoBehaviour
 {
+    
+    /*
+     *  Currently this class is purely used for spawning objects in the scene for testing purposes.
+     *  This is not final at all
+     * 
+     */
+    
     private GameObject parent;
     [SerializeField] private Builder builder;
     
@@ -46,6 +53,17 @@ public class ObjectSpawner : MonoBehaviour
             GameObject go = Instantiate(builder.placeableObjectsDict[name]);
             go.name = name;
             NetworkServer.Spawn(go);
+            go.transform.SetParent(parent.transform);
+            go.transform.position = new Vector3(0, 0, 0);
+            go.tag = "Selectable";
+        }
+        
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            string name = "Sphere";
+            GameObject go = Instantiate(builder.placeableObjectsDict[name]);
+            go.name = name;
+            //NetworkServer.Spawn(go);
             go.transform.SetParent(parent.transform);
             go.transform.position = new Vector3(0, 0, 0);
             go.tag = "Selectable";

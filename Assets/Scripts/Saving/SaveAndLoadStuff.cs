@@ -8,6 +8,11 @@ using TMPro;
 
 public class SaveAndLoadStuff : MonoBehaviour
 {
+    /*
+     * Class is messy and has a dumb name.
+     * Will be fixed later
+     */
+    
     [SerializeField] private SaveManager saveManager;
     [SerializeField] private GameObject parent;
     [SerializeField] private Builder Builder;
@@ -50,10 +55,12 @@ public class SaveAndLoadStuff : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.O))
             {
                 SaveUI.SetActive(true);
+                openMenu = true;
             }
             else if (Input.GetKeyDown(KeyCode.P))
             {
                 LoadUI.SetActive(true);
+                openMenu = true;
             }
         }
     }

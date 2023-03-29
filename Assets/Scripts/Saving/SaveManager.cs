@@ -7,7 +7,10 @@ using UnityEngine.Serialization;
 
 public class SaveManager : MonoBehaviour
 {
-
+    /*
+     * This should not be present in a Manager class
+     * Will likely be refactored
+     */
     
     public void Save(MapSceneData mapSceneData)
     {

@@ -13,6 +13,13 @@ using UnityEngine.Rendering;
 
 public class LobbyController : MonoBehaviour
 {
+    /*
+     *  This heap of junk is used to update the player list in the lobby scene
+     *  It's absolute garbage and is the main reason why I want to rewrite the lobby system
+     * 
+     */
+    
+    
     public static LobbyController Instance;
     
     public TextMeshProUGUI lobbyText;
@@ -65,6 +72,16 @@ public class LobbyController : MonoBehaviour
         lobbyText.text = SteamMatchmaking.GetLobbyData(new CSteamID(lobbyID), "name");
     }
 
+    /*
+     * This function causes all of my pain.
+     * Normally this function should just be called from the playerobjectcontroller when a player joins, leaves or updates their name.
+     * This does not work however because this function is dependedent on the NetworkManager.GamePlayers list.
+     * Whilst the list works it's updated slower then when the function would normally be called.
+     * This causes the function to be ran before the list is updated and thus the list is not updated.
+     *
+     * This function now runs every time the list is updated and checks if the list is the same size as the list of players.
+     * This works but I hate it
+     */
     public void UpdatePlayerList(object sender, NotifyCollectionChangedEventArgs e)
     {
         if (!PlayerItemCreated)
@@ -101,6 +118,8 @@ public class LobbyController : MonoBehaviour
         }
     }
 
+    //This code is buggy so I decided to just set the Local player from it's own class. 
+    
     // public void FindLocalPlayer()
     // {
     //     LocalPlayerObject = GameObject.Find("LocalGamePlayer"); //TODO Change to SteamFriends.GetPersonaName()

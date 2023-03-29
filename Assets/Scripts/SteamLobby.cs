@@ -8,6 +8,14 @@ using TMPro;
 
 public class SteamLobby : MonoBehaviour
 {
+    /*
+     *  This script is used to create a lobby and join a lobby using steam
+     *  This is far from the final version of the script and will definitely be looked at when the networking rework happens
+     *
+     * 
+     */
+    
+    
     public static SteamLobby Instance;
     
     protected Callback<LobbyCreated_t> lobbyCreated;

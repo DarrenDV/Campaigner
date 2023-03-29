@@ -24,15 +24,6 @@ public class CustomNetworkManager : NetworkManager
     
     [SerializeField] public PlayerObjectController localPlayer; //The local player object can be used to get a direct reference to their rights
 
-
-    private void Awake()
-    {
-        if (Instance != null)
-        {
-            Destroy(this);
-        }
-    }
-    
     public override void OnServerAddPlayer(NetworkConnectionToClient conn) //This function is being called when a player joins a lobby.
     {
         PlayerObjectController player = Instantiate(playerObjectController);

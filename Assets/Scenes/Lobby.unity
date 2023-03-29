@@ -851,7 +851,6 @@ MonoBehaviour:
   PlayerListViewContent: {fileID: 1139100770}
   PlayerListItemPrefab: {fileID: 8756128004239291676, guid: 4ba4340de0b0e054196814ea8438284d,
     type: 3}
-  LocalPlayerObject: {fileID: 0}
   lobbyID: 0
   PlayerItemCreated: 0
   LocalPlayerController: {fileID: 0}
@@ -1454,6 +1453,18 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 1111410611}
+        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
+        m_MethodName: set_enabled
+        m_Mode: 6
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
       - m_Target: {fileID: 2059886215}
         m_TargetAssemblyTypeName: MainMenuUI, Assembly-CSharp
         m_MethodName: OnSceneButtonClicked

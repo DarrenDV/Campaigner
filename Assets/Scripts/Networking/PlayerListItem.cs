@@ -25,4 +25,6 @@ public class PlayerListItem : MonoBehaviour
     {
         PlayerNameText.text = PlayerName;
     }
+    
+    
 }

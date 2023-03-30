@@ -15,7 +15,7 @@ public class SaveAndLoadStuff : MonoBehaviour
     
     [SerializeField] private SaveManager saveManager;
     [SerializeField] private GameObject parent;
-    [SerializeField] private Builder Builder;
+    [SerializeField] private BigBuilder Builder;
 
     [SerializeField] private GameObject SaveUI;
     [SerializeField] private TMP_InputField inputField;
@@ -42,7 +42,7 @@ public class SaveAndLoadStuff : MonoBehaviour
         
         if (Builder == null)
         {
-            Builder = GameObject.Find("Builder").GetComponent<Builder>();
+            Builder = GameObject.Find("BigBuilder").GetComponent<BigBuilder>();
         }
         
         version = Application.version;

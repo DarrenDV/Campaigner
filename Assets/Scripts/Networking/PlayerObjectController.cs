@@ -13,7 +13,6 @@ public class PlayerObjectController : NetworkBehaviour
      *
      *  Currently this class only works in the Lobby scene and is destroyed afterwards
      *
-     *  TODO: Make this class work in the game scene as well    
      *  TODO: Rework this class
      *  TODO: Decide if it's actually in need of a rework
      */

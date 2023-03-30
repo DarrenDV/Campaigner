@@ -12,6 +12,6 @@ EditorBuildSettings:
     path: Assets/Scenes/Lobby.unity
     guid: 5792d04990536624cbd133d570242c59
   - enabled: 1
-    path: Assets/Scenes/SceneSavingTest.unity
+    path: Assets/Scenes/Game.unity
     guid: ba4ee1739d4bd6346a10cdcd86e01075
   m_configObjects: {}

@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using UnityEngine;
-using UnityEngine.EventSystems;
 
-public class BigBuilder : MonoBehaviour, IPointerClickHandler
+
+public class BigBuilder : MonoBehaviour
 {
     public static BigBuilder Instance { get; private set; }
     
@@ -49,10 +49,5 @@ public class BigBuilder : MonoBehaviour, IPointerClickHandler
         go.transform.position = new Vector3(0, 0, 0);
         go.transform.SetParent(parent.transform);
         go.tag = "Selectable";
-    }
-    
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        Debug.Log("Clicked: " + eventData.pointerCurrentRaycast.gameObject.name);
     }
 }

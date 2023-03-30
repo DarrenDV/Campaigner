@@ -106,7 +106,7 @@ public class SaveAndLoadStuff : MonoBehaviour
         openMenu = false;
     }
 
-    private void Load(string fileName)
+    private void Load(string fileName) //TODO: DELETE PREVIOUS SPAWNED OBJECTS
     {
         MapSceneData mapSceneData = saveManager.Load(fileName);
         

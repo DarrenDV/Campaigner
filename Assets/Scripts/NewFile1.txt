@@ -1,0 +1,10 @@
+﻿Stappenplan:
+
+Check which gameobject is closest to the current gameobject (might still have to check snappoints)
+Only check the snappoints of this gameobject
+
+Get closest snappoint of that gameobject
+Check which snappoint of own gameobject is closest to that gameobject
+
+Set own snappoint position to that of other snappoint
+Reset the positions so that they all line up

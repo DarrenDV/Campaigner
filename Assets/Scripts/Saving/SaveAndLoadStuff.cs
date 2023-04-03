@@ -15,7 +15,6 @@ public class SaveAndLoadStuff : MonoBehaviour
     
     [SerializeField] private SaveManager saveManager;
     [SerializeField] private GameObject parent;
-    [SerializeField] private BigBuilder Builder;
 
     [SerializeField] private GameObject SaveUI;
     [SerializeField] private TMP_InputField inputField;
@@ -37,14 +36,9 @@ public class SaveAndLoadStuff : MonoBehaviour
 
         if (parent == null)
         {
-            parent = GameObject.Find("Parent");
+            parent = BuildingManager.Instance.GetParent();
         }
-        
-        if (Builder == null)
-        {
-            Builder = GameObject.Find("BigBuilder").GetComponent<BigBuilder>();
-        }
-        
+
         version = Application.version;
     }
 
@@ -121,7 +115,7 @@ public class SaveAndLoadStuff : MonoBehaviour
         
         foreach (GameObjectData gameObjectData in mapSceneData.gameObjects)
         {
-            GameObject go = Instantiate(Builder.placeableObjectsDict[gameObjectData.name], gameObjectData.position, gameObjectData.rotation);
+            GameObject go = Instantiate(BuildingManager.Instance.placeableObjectsDict[gameObjectData.name], gameObjectData.position, gameObjectData.rotation);
             go.name = gameObjectData.name;
             NetworkServer.Spawn(go);
             go.transform.localScale = gameObjectData.scale;

@@ -310,6 +310,8 @@ MonoBehaviour:
   _targetHeight: 0
   hasSnapped: 0
   snappingRadius: 3
+  _closestOtherSnapPoint: {fileID: 0}
+  _closestOwnSnapPoint: {fileID: 0}
 --- !u!1 &179025373
 GameObject:
   m_ObjectHideFlags: 0
@@ -3793,7 +3795,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   placeableObjects: []
-  ghostMaterial: {fileID: 2100000, guid: 1e86be57ebed25e44ab9b3ede7ba7cbb, type: 2}
+  ghostMaterial: {fileID: 2100000, guid: 16f175423da1e7848a73fe2dfca0b64e, type: 2}
 --- !u!4 &2051073727
 Transform:
   m_ObjectHideFlags: 0

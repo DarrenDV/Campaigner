@@ -13,10 +13,14 @@ public class GhostPlacerAndSnapper : MonoBehaviour
     
     [SerializeField] private float snappingRadius = 10f;
     
-    
-    
     private GhostObject _ghostObjectScript;
 
+
+
+    [SerializeField] private GameObject _closestOtherSnapPoint;
+    [SerializeField] private GameObject _closestOwnSnapPoint;
+    
+    
     private void Start()
     {
         if (mainCam == null)
@@ -58,7 +62,9 @@ public class GhostPlacerAndSnapper : MonoBehaviour
         
         Vector3 targetPosition = GetTargetPosition();
         ObjectMovement(targetPosition);
-        SnapObject(targetPosition);
+        //SnapObject(targetPosition);
+
+        SetGhostObjectPosition(targetPosition);
     }
 
     /// <summary>
@@ -80,6 +86,127 @@ public class GhostPlacerAndSnapper : MonoBehaviour
             }
         }
     }
+
+    
+    
+    
+
+
+    private GameObject ClosestPlacedObject(Vector3 position)
+    {
+        Collider[] hitColliders = Physics.OverlapSphere(position, snappingRadius);
+        GameObject closestObject = null;
+        float closestDistance = Mathf.Infinity;
+        
+        foreach (Collider collider in hitColliders)
+        {
+            if (collider.CompareTag("Selectable"))
+            {
+                if(collider.gameObject == _ghostObject)
+                {
+                    continue;
+                }
+                
+                if(Vector3.Distance(collider.transform.position, position) < closestDistance)
+                {
+                    closestDistance = Vector3.Distance(collider.transform.position, position);
+                    closestObject = collider.gameObject;
+                }
+            }
+        }
+        
+        return closestObject;
+    }
+    
+    private GameObject ClosestPlacedObjectSnapPoint(GameObject placedObject, Vector3 position)
+    {
+        if(placedObject == null)
+        {
+            return null;
+        }
+        
+        List<GameObject> snapPoints = placedObject.GetComponent<PlacedObject>().snappingPointsGenerator.snapPoints;
+        GameObject closestSnapPoint = null;
+        float closestDistance = Mathf.Infinity;
+        
+        foreach (GameObject snapPoint in snapPoints)
+        {
+            if(Vector3.Distance(snapPoint.transform.position, position) < closestDistance)
+            {
+                closestDistance = Vector3.Distance(snapPoint.transform.position, position);
+                closestSnapPoint = snapPoint;
+            }
+        }
+        return closestSnapPoint;
+    }
+
+    private GameObject ClosestOwnSnapPointToOtherObjectSnapPoint(GameObject otherSnapPoint)
+    {
+        List<GameObject> ownSnapPoints = _ghostObjectScript.GetSnapPoints();
+        GameObject closestSnapPoint = null;
+        float closestDistance = Mathf.Infinity;
+        
+        foreach (GameObject snapPoint in ownSnapPoints)
+        {
+            if(Vector3.Distance(snapPoint.transform.position, otherSnapPoint.transform.position) < closestDistance)
+            {
+                closestDistance = Vector3.Distance(snapPoint.transform.position, otherSnapPoint.transform.position);
+                closestSnapPoint = snapPoint;
+            }
+        }
+        
+        return closestSnapPoint;
+    }
+
+    private void SetGhostObjectPosition(Vector3 position)
+    {
+        _closestOtherSnapPoint = ClosestPlacedObjectSnapPoint(ClosestPlacedObject(position), position);
+        
+        if(_closestOtherSnapPoint == null)
+        {
+            return;
+        }
+        _closestOwnSnapPoint = ClosestOwnSnapPointToOtherObjectSnapPoint(_closestOtherSnapPoint);
+        
+        if(_closestOwnSnapPoint == null)
+        {
+            return;
+        }
+
+        if (!hasSnapped)
+        {
+            _ghostObject.transform.position = _closestOtherSnapPoint.transform.position;
+            Vector3 offset = _ghostObject.transform.position - _closestOwnSnapPoint.transform.position;
+            _ghostObject.transform.position += offset;
+            _hookedSnapPoint = _closestOtherSnapPoint;
+            hasSnapped = true;
+        }   
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     /// <summary>
     /// Snap the ghost object to the closest snap point

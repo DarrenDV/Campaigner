@@ -1,10 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Mirror;
 using UnityEngine;
 using TMPro;
-
 
 public class SaveAndLoadStuff : MonoBehaviour
 {
@@ -113,15 +108,12 @@ public class SaveAndLoadStuff : MonoBehaviour
             return;
         }
         
+        BuildingManager.Instance.ClearScene();
+        
         foreach (GameObjectData gameObjectData in mapSceneData.gameObjects)
         {
-            GameObject go = Instantiate(BuildingManager.Instance.placeableObjectsDict[gameObjectData.name], gameObjectData.position, gameObjectData.rotation);
-            go.name = gameObjectData.name;
-            NetworkServer.Spawn(go);
-            go.transform.localScale = gameObjectData.scale;
-            go.transform.SetParent(parent.transform);
-            go.tag = "Selectable";
-
+            
+            BuildingManager.Instance.PlaceObject(gameObjectData.name, gameObjectData.position, gameObjectData.rotation, gameObjectData.scale);
         }
     }
 }

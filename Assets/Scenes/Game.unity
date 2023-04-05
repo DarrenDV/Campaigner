@@ -307,11 +307,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c75b4b01e5ff4a24dabc5f148e9721c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _targetHeight: 0
-  hasSnapped: 0
   snappingRadius: 3
+  _targetHeight: 0
   _closestOtherSnapPoint: {fileID: 0}
   _closestOwnSnapPoint: {fileID: 0}
+  hasSnapped: 0
 --- !u!1 &179025373
 GameObject:
   m_ObjectHideFlags: 0

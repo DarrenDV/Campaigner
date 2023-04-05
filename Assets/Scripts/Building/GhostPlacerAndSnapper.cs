@@ -1,24 +1,20 @@
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 public class GhostPlacerAndSnapper : MonoBehaviour
 {
-    private GameObject _ghostObject;
-    private Camera mainCam;
+    [SerializeField] private float snappingRadius = 10f;
     [SerializeField] private int _targetHeight = 0;
+    [SerializeField] private GameObject _closestOtherSnapPoint; //this is only serialized for debugging purposes
+    [SerializeField] private GameObject _closestOwnSnapPoint; //this is only serialized for debugging purposes
+
+    private GameObject _hookedSnapPoint;
+    private GameObject _ghostObject;
+    private GhostObject _ghostObjectScript;
+    
+    private Camera mainCam;
     
     public bool hasSnapped = false;
-    private GameObject _hookedSnapPoint;
-    
-    [SerializeField] private float snappingRadius = 10f;
-    
-    private GhostObject _ghostObjectScript;
-
-
-
-    [SerializeField] private GameObject _closestOtherSnapPoint;
-    [SerializeField] private GameObject _closestOwnSnapPoint;
     
     
     private void Start()
@@ -48,6 +44,8 @@ public class GhostPlacerAndSnapper : MonoBehaviour
         _ghostObjectScript = null;
         _ghostObject = null;
         _hookedSnapPoint = null;
+        _closestOtherSnapPoint = null;
+        _closestOwnSnapPoint = null;
         hasSnapped = false;
     }
 
@@ -62,9 +60,56 @@ public class GhostPlacerAndSnapper : MonoBehaviour
         
         Vector3 targetPosition = GetTargetPosition();
         ObjectMovement(targetPosition);
-        //SnapObject(targetPosition);
+        SnapPointChecks(targetPosition);
+    }
+    
+    private void HandleInput()
+    {
+        if (Input.mouseScrollDelta.y != 0)
+        {
+            _targetHeight += (int) Input.mouseScrollDelta.y;
+        }
+        
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            ClearGhostObject();
+            this.enabled = false;
+        }
+        
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            _ghostObject.transform.Rotate(0, 90, 0);
+        }
+    }
 
-        SetGhostObjectPosition(targetPosition);
+    private void SnapPointChecks(Vector3 position)
+    {
+        _closestOtherSnapPoint = ClosestPlacedObjectSnapPoint(ClosestPlacedObject(position), position);
+        
+        if(_closestOtherSnapPoint == null)
+        {
+            return;
+        }
+        _closestOwnSnapPoint = ClosestListObjectToVector(_ghostObjectScript.GetSnapPoints(), _closestOtherSnapPoint.transform.position);
+        
+        if(_closestOwnSnapPoint == null)
+        {
+            return;
+        }
+        
+        if (!hasSnapped)
+        {
+            SetPosition();
+        }   
+    }
+
+    private void SetPosition()
+    {
+        _ghostObject.transform.position = _closestOtherSnapPoint.transform.position;
+        Vector3 offset = _ghostObject.transform.position - _closestOwnSnapPoint.transform.position;
+        _ghostObject.transform.position += offset;
+        _hookedSnapPoint = _closestOtherSnapPoint;
+        hasSnapped = true; 
     }
 
     /// <summary>
@@ -86,18 +131,17 @@ public class GhostPlacerAndSnapper : MonoBehaviour
             }
         }
     }
-
     
-    
-    
-
-
+    /// <summary>
+    /// Get the closest placed object to the mouse
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
     private GameObject ClosestPlacedObject(Vector3 position)
     {
         Collider[] hitColliders = Physics.OverlapSphere(position, snappingRadius);
-        GameObject closestObject = null;
-        float closestDistance = Mathf.Infinity;
-        
+        List<GameObject> validObjects = new List<GameObject>();
+
         foreach (Collider collider in hitColliders)
         {
             if (collider.CompareTag("Selectable"))
@@ -106,18 +150,19 @@ public class GhostPlacerAndSnapper : MonoBehaviour
                 {
                     continue;
                 }
-                
-                if(Vector3.Distance(collider.transform.position, position) < closestDistance)
-                {
-                    closestDistance = Vector3.Distance(collider.transform.position, position);
-                    closestObject = collider.gameObject;
-                }
+                validObjects.Add(collider.gameObject);
             }
         }
         
-        return closestObject;
+        return ClosestListObjectToVector(validObjects, position);
     }
     
+    /// <summary>
+    /// Get the closest snap point of the closest placed object to the mouse
+    /// </summary>
+    /// <param name="placedObject"></param>
+    /// <param name="position"></param>
+    /// <returns></returns>
     private GameObject ClosestPlacedObjectSnapPoint(GameObject placedObject, Vector3 position)
     {
         if(placedObject == null)
@@ -126,177 +171,42 @@ public class GhostPlacerAndSnapper : MonoBehaviour
         }
         
         List<GameObject> snapPoints = placedObject.GetComponent<PlacedObject>().snappingPointsGenerator.snapPoints;
-        GameObject closestSnapPoint = null;
-        float closestDistance = Mathf.Infinity;
-        
-        foreach (GameObject snapPoint in snapPoints)
-        {
-            if(Vector3.Distance(snapPoint.transform.position, position) < closestDistance)
-            {
-                closestDistance = Vector3.Distance(snapPoint.transform.position, position);
-                closestSnapPoint = snapPoint;
-            }
-        }
-        return closestSnapPoint;
+        return ClosestListObjectToVector(snapPoints, position);
     }
 
-    private GameObject ClosestOwnSnapPointToOtherObjectSnapPoint(GameObject otherSnapPoint)
-    {
-        List<GameObject> ownSnapPoints = _ghostObjectScript.GetSnapPoints();
-        GameObject closestSnapPoint = null;
-        float closestDistance = Mathf.Infinity;
-        
-        foreach (GameObject snapPoint in ownSnapPoints)
-        {
-            if(Vector3.Distance(snapPoint.transform.position, otherSnapPoint.transform.position) < closestDistance)
-            {
-                closestDistance = Vector3.Distance(snapPoint.transform.position, otherSnapPoint.transform.position);
-                closestSnapPoint = snapPoint;
-            }
-        }
-        
-        return closestSnapPoint;
-    }
-
-    private void SetGhostObjectPosition(Vector3 position)
-    {
-        _closestOtherSnapPoint = ClosestPlacedObjectSnapPoint(ClosestPlacedObject(position), position);
-        
-        if(_closestOtherSnapPoint == null)
-        {
-            return;
-        }
-        _closestOwnSnapPoint = ClosestOwnSnapPointToOtherObjectSnapPoint(_closestOtherSnapPoint);
-        
-        if(_closestOwnSnapPoint == null)
-        {
-            return;
-        }
-
-        if (!hasSnapped)
-        {
-            _ghostObject.transform.position = _closestOtherSnapPoint.transform.position;
-            Vector3 offset = _ghostObject.transform.position - _closestOwnSnapPoint.transform.position;
-            _ghostObject.transform.position += offset;
-            _hookedSnapPoint = _closestOtherSnapPoint;
-            hasSnapped = true;
-        }   
-    }
-
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     /// <summary>
-    /// Snap the ghost object to the closest snap point
+    /// Calculates the closest object in a list to a given vector
     /// </summary>
-    /// <param name="targetPosition"></param>
-    private void SnapObject(Vector3 targetPosition)
+    /// <param name="objects"></param>
+    /// <param name="location"></param>
+    /// <returns>The GameObject from the list closest to the location</returns>
+    private GameObject ClosestListObjectToVector(List<GameObject> objects, Vector3 location)
     {
-        List<Collider> hitColliders = GetHitColliders(targetPosition);
-        
-        if (hitColliders.Count == 0)
+        if(objects.Count == 0)
         {
-            return;
+            return null;
         }
         
-        GameObject closestSnapPoint = ClosestSnapPoint(hitColliders, targetPosition);
+        GameObject closestObject = null;
+        float closestDistance = Mathf.Infinity;
         
-        if (closestSnapPoint != null)
+        foreach (GameObject obj in objects)
         {
-            _hookedSnapPoint = closestSnapPoint;
-            // GameObject ownClosestSnapPoint = _ghostObjectScript.GetOwnClosestSnappingPoint(_hookedSnapPoint);
-            // ownClosestSnapPoint.transform.position = closestSnapPoint.transform.position;
-            // _ghostObjectScript.ResetOwnPosition();
-            hasSnapped = true;
-            _ghostObject.transform.position = GetPositionWithBounds(_hookedSnapPoint, _ghostObject);
+            if(Vector3.Distance(obj.transform.position, location) < closestDistance)
+            {
+                closestDistance = Vector3.Distance(obj.transform.position, location);
+                closestObject = obj;
+            }
         }
+        
+        return closestObject;
     }
 
-    private void HandleInput()
-    {
-        if (Input.mouseScrollDelta.y != 0)
-        {
-            _targetHeight += (int) Input.mouseScrollDelta.y;
-        }
-        
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            ClearGhostObject();
-            this.enabled = false;
-        }
-        
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            _ghostObject.transform.Rotate(0, 90, 0);
-        }
-    }
-    
     public GameObject GetGhostObject()
     {
         return _ghostObject;
     }
-    
-    /// <summary>
-    /// Gets all the colliders that are within the snapping radius 
-    /// </summary>
-    /// <param name="targetPosition">The mouse position at the base of the sphere</param>
-    /// <returns>A list of colliders around the object that'll be placed</returns>
-    private List<Collider> GetHitColliders(Vector3 targetPosition) //TODO: FIX THIS MESS
-    {
-        List<Collider> hitColliders = Physics.OverlapSphere(targetPosition, snappingRadius).ToList();
-        List<Collider> snapPointColliders = new List<Collider>();
-        List<Collider> otherObjectColliders = new List<Collider>();
 
-        foreach(Collider collider in hitColliders)
-        {
-            if (collider.gameObject.CompareTag("SnapPoint"))
-            {
-                snapPointColliders.Add(collider); //I make an array of only the snap points
-            }
-        }
-
-        foreach (Collider collider in snapPointColliders) //I check if the snap point is one of the ghost objects snap points and discard it if it is
-        {
-            bool isOwnSnapPoint = false;
-            foreach (GameObject go in _ghostObjectScript.GetSnapPoints())
-            {
-                if (collider.gameObject == go)
-                {
-                    isOwnSnapPoint = true;
-                }
-            }
-            
-            if (!isOwnSnapPoint)
-            {
-                otherObjectColliders.Add(collider);
-            }
-        }
-
-        return otherObjectColliders;
-    }
-    
     /// <summary>
     /// Get the position of the mouse on the ground
     /// </summary>
@@ -314,96 +224,5 @@ public class GhostPlacerAndSnapper : MonoBehaviour
         Vector3 hitPoint = ray.origin + t * ray.direction;
         hitPoint.y = _targetHeight;
         return hitPoint;
-    }
-
-    /// <summary>
-    /// Returns the closest snap point to the target position
-    /// </summary>
-    /// <param name="hitColliders">All colliders found around the object</param>
-    /// <param name="targetPosition">Mouse position</param>
-    /// <returns> SnapPoint Gameobject that is closest to the ghost object</returns>
-    private GameObject ClosestSnapPoint(List<Collider> hitColliders, Vector3 targetPosition)
-    {
-        GameObject closestPoint = null;
-        float closestDistance = Mathf.Infinity;
-
-        foreach (Collider collider in hitColliders)
-        {
-            if(Vector3.Distance(collider.transform.position, targetPosition) < closestDistance)
-            {
-                closestPoint = collider.gameObject;
-                closestDistance = Vector3.Distance(collider.transform.position, targetPosition);
-            }
-        }
-        
-        return closestPoint;
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    /// <summary>
-    /// Get the location used for spawning the object
-    /// </summary>
-    /// <param name="snapPoint"></param>
-    /// <param name="ghostObject"></param>
-    /// <returns></returns>
-    private Vector3 GetPositionWithBounds(GameObject snapPoint, GameObject ghostObject)
-    {
-        Vector3 updatedPosition = snapPoint.transform.position; //We start with the snap point position
-
-        SnapPointType snapPointType = snapPoint.GetComponent<SnapPoint>().snapPointType; //We get the snap point type
-        Vector3 ghostObjectBoundsExtend = GetBoundsExtends(ghostObject); //We get the bounds extend of the ghost object
-
-        //We add the bounds extend to the position depending on the snap point type
-        switch (snapPointType)
-        {
-            //We dont need this because we normally add the bounds extend to the y position
-            // case SnapPointType.Top:
-            //     updatedPosition.y += ghostObjectBoundsExtend.y;
-            //     break;
-            
-            case SnapPointType.Bottom:
-                //updatedPosition.y -= ghostObjectBoundsExtend.y;
-                updatedPosition.y -= ghostObjectBoundsExtend.y * 2; //We double this due to the fact that we normally add the bounds extend to the y position
-                break;
-            
-            case SnapPointType.Right:
-                updatedPosition.x += ghostObjectBoundsExtend.x;
-                break;
-            
-            case SnapPointType.Left:
-                updatedPosition.x -= ghostObjectBoundsExtend.x;
-                break;
-            
-            case SnapPointType.Front:
-                updatedPosition.z += ghostObjectBoundsExtend.z;
-                break;
-            
-            case SnapPointType.Back:
-                updatedPosition.z -= ghostObjectBoundsExtend.z;
-                break;
-        }
-        
-        updatedPosition.y += ghostObjectBoundsExtend.y;
-        
-
-        return updatedPosition;
-    }
-    
-    public Vector3 GetBoundsExtends(GameObject go){
-        return go.GetComponent<Renderer>().bounds.extents;
     }
 }

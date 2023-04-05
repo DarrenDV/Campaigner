@@ -7,18 +7,18 @@ using UnityEngine;
 public class BuildingManager : MonoBehaviour
 {
     public static BuildingManager Instance { get; private set; }
-    
-    [SerializeField] private List<GameObject> placeableObjects;
-    public readonly Dictionary<string, GameObject> placeableObjectsDict = new Dictionary<string, GameObject>();
-    
+
+    [SerializeField] private List<GameObject> placeableObjects; //Is only serialized for debugging purposes
     [SerializeField] private Material ghostMaterial;
-     
+    
+    public readonly Dictionary<string, GameObject> placeableObjectsDict = new Dictionary<string, GameObject>();
+
+    
+
     private const string PREFABS_PATH = "Prefabs";
-    
+
     private GameObject _parent;
-    
     private GhostPlacerAndSnapper _ghostPlacer;
-    
 
     private void Awake()
     {
@@ -79,6 +79,11 @@ public class BuildingManager : MonoBehaviour
     /// <param name="_transform"></param>
     public void PlaceObject(string objectName, Transform _transform)
     {
+        PlaceObject(objectName, _transform.position, _transform.rotation, _transform.localScale);
+    }
+
+    public void PlaceObject(string objectName, Vector3 position, Quaternion rotation, Vector3 scale)
+    {
         GameObject go = Instantiate(placeableObjectsDict[objectName]);
         go.name = objectName;
 
@@ -87,11 +92,11 @@ public class BuildingManager : MonoBehaviour
             NetworkServer.Spawn(go);
         }
         
-        go.transform.position = _transform.position;
+        go.transform.position = position;
         
         
-        go.transform.rotation = _transform.rotation;
-        go.transform.localScale = _transform.localScale;
+        go.transform.rotation = rotation;
+        go.transform.localScale = scale;
 
         go.AddComponent<GenerateSnappingPoints>();
         go.GetComponent<PlacedObject>().ObjectPlaced();
@@ -121,6 +126,14 @@ public class BuildingManager : MonoBehaviour
 
         _ghostPlacer.enabled = true;
         _ghostPlacer.SetGhostObject(go);
+    }
+
+    public void ClearScene()
+    {
+        foreach (Transform child in _parent.transform)
+        {
+            Destroy(child.gameObject);
+        }
     }
     
     public GameObject GetParent()

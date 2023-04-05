@@ -13,7 +13,7 @@ public class BuildableObject : MonoBehaviour
 
     public void BuildObject()
     {
-        BigBuilder.Instance.SpawnObject(objectName);
+        BuildingManager.Instance.SpawnGhostObject(objectName);
     }
 
     public void SetObjectImage(GameObject prefab)

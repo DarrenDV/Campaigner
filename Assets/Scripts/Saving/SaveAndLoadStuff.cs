@@ -1,10 +1,5 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using Mirror;
 using UnityEngine;
 using TMPro;
-
 
 public class SaveAndLoadStuff : MonoBehaviour
 {
@@ -15,7 +10,6 @@ public class SaveAndLoadStuff : MonoBehaviour
     
     [SerializeField] private SaveManager saveManager;
     [SerializeField] private GameObject parent;
-    [SerializeField] private BigBuilder Builder;
 
     [SerializeField] private GameObject SaveUI;
     [SerializeField] private TMP_InputField inputField;
@@ -37,14 +31,9 @@ public class SaveAndLoadStuff : MonoBehaviour
 
         if (parent == null)
         {
-            parent = GameObject.Find("Parent");
+            parent = BuildingManager.Instance.GetParent();
         }
-        
-        if (Builder == null)
-        {
-            Builder = GameObject.Find("BigBuilder").GetComponent<BigBuilder>();
-        }
-        
+
         version = Application.version;
     }
 
@@ -119,15 +108,12 @@ public class SaveAndLoadStuff : MonoBehaviour
             return;
         }
         
+        BuildingManager.Instance.ClearScene();
+        
         foreach (GameObjectData gameObjectData in mapSceneData.gameObjects)
         {
-            GameObject go = Instantiate(Builder.placeableObjectsDict[gameObjectData.name], gameObjectData.position, gameObjectData.rotation);
-            go.name = gameObjectData.name;
-            NetworkServer.Spawn(go);
-            go.transform.localScale = gameObjectData.scale;
-            go.transform.SetParent(parent.transform);
-            go.tag = "Selectable";
-
+            
+            BuildingManager.Instance.PlaceObject(gameObjectData.name, gameObjectData.position, gameObjectData.rotation, gameObjectData.scale);
         }
     }
 }

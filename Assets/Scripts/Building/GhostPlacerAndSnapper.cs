@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Campaigner.UI;
 using UnityEngine;
 
 public class GhostPlacerAndSnapper : MonoBehaviour
@@ -33,6 +34,8 @@ public class GhostPlacerAndSnapper : MonoBehaviour
     {
         _ghostObject = ghostObject;
         _ghostObjectScript = _ghostObject.GetComponent<GhostObject>();
+
+        GameUIManager.Instance.CanSwitchMenuState = false;
     }
     
     /// <summary>
@@ -47,6 +50,8 @@ public class GhostPlacerAndSnapper : MonoBehaviour
         _closestOtherSnapPoint = null;
         _closestOwnSnapPoint = null;
         hasSnapped = false;
+        
+        GameUIManager.Instance.CanSwitchMenuState = true;
     }
 
     private void Update()
@@ -118,6 +123,11 @@ public class GhostPlacerAndSnapper : MonoBehaviour
     /// <param name="targetPosition"></param>
     private void ObjectMovement(Vector3 targetPosition)
     {
+        if (_ghostObject == null)
+        {
+            return; 
+        }
+        
         if (!hasSnapped) //There is free movement if the object has not snapped
         {
             _ghostObject.transform.position = targetPosition;

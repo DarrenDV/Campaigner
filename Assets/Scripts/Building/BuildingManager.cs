@@ -13,8 +13,6 @@ public class BuildingManager : MonoBehaviour
     
     public readonly Dictionary<string, GameObject> placeableObjectsDict = new Dictionary<string, GameObject>();
 
-    
-
     private const string PREFABS_PATH = "Prefabs";
 
     private GameObject _parent;

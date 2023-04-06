@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Campaigner.UI;
 using RuntimeHandle;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -67,7 +68,7 @@ public class TransformManipulatorManager : MonoBehaviour
             }
             
             //Basically if the user presses escape
-            if(Input.GetKeyDown(KeyCode.X))
+            if(Input.GetKeyDown(KeyCode.Escape))
             {
                 DisableTransformHandler();
             }
@@ -79,6 +80,11 @@ public class TransformManipulatorManager : MonoBehaviour
     /// </summary>
     private void CheckForSelectedObject()
     {
+        if (UIUtils.Instance.IsPointerOverUIElement())
+        {
+            return;
+        }
+        
         if (Input.GetMouseButtonDown(0))
         {
             Ray ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
@@ -89,6 +95,8 @@ public class TransformManipulatorManager : MonoBehaviour
                 {
                     _transformHandle.gameObject.SetActive(true);
                     _transformHandle.target = hit.transform;
+                    
+                    GameUIManager.Instance.CanSwitchMenuState = false;
                 }
             }
             else
@@ -106,6 +114,8 @@ public class TransformManipulatorManager : MonoBehaviour
         _transformHandle.target = null;
         _transformHandle.type = HandleType.POSITION;
         _transformHandle.gameObject.SetActive(false);
+
+        GameUIManager.Instance.CanSwitchMenuState = true;
     }
 
     /// <summary>

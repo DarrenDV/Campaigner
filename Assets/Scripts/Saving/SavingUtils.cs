@@ -27,6 +27,12 @@ public class SavingUtils
         return saveFiles;
     }
     
+    public static bool FileExists(string fileName)
+    {
+        string path = Application.dataPath + "/SaveData/" + fileName + ".json";
+        return File.Exists(path);
+    }
+    
     /// <summary>
     /// Gets all the children of a parent gameobject
     /// </summary>

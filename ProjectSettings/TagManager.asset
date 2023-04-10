@@ -7,6 +7,7 @@ TagManager:
   - TransformHandler
   - Selectable
   - SnapPoint
+  - FocusPoint
   layers:
   - Default
   - TransparentFX

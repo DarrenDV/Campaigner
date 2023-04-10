@@ -102,6 +102,8 @@ public class BuildingManager : MonoBehaviour
         go.tag = "Selectable";
         
         go.transform.SetParent(_parent.transform);
+        
+        UpdateWorldBounds(position);
     }
 
     /// <summary>
@@ -126,6 +128,44 @@ public class BuildingManager : MonoBehaviour
         _ghostPlacer.SetGhostObject(go);
     }
 
+    private void UpdateWorldBounds(Vector3 position)
+    {
+        Vector3 minBounds = WorldInfo.Instance.GetMinBounds();
+        
+        if (position.x < minBounds.x)
+        {
+            minBounds.x = position.x;
+        }
+        if(position.y < minBounds.y)
+        {
+            minBounds.y = position.y;
+        }
+        if(position.z < minBounds.z)
+        {
+            minBounds.z = position.z;
+        }
+        
+        WorldInfo.Instance.SetMinBounds(minBounds);
+        
+        Vector3 maxBounds = WorldInfo.Instance.GetMaxBounds();
+        
+        if (position.x > maxBounds.x)
+        {
+            maxBounds.x = position.x;
+        }
+        if(position.y > maxBounds.y)
+        {
+            maxBounds.y = position.y;
+        }
+        if(position.z > maxBounds.z)
+        {
+            maxBounds.z = position.z;
+        }
+        
+        WorldInfo.Instance.SetMaxBounds(maxBounds);
+        
+    }
+    
     public void ClearScene()
     {
         foreach (Transform child in _parent.transform)

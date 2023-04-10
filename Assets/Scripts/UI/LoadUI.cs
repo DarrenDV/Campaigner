@@ -35,7 +35,8 @@ namespace Campaigner.UI
             {
                 return;
             }
-            
+
+            WorldInfo.Instance.OnLoad();
             SavingLoading.SavingLoading.Load(dropdown.options[dropdown.value].text);
             GameUIManager.Instance.GameMenuState = GameMenuState.EscMenu;
         }

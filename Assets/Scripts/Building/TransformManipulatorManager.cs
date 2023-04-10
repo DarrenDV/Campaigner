@@ -67,7 +67,6 @@ public class TransformManipulatorManager : MonoBehaviour
                 _transformHandle.type = HandleType.SCALE;
             }
             
-            //Basically if the user presses escape
             if(Input.GetKeyDown(KeyCode.Escape))
             {
                 DisableTransformHandler();

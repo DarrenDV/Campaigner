@@ -16,12 +16,28 @@ public class TransformManipulatorManager : MonoBehaviour
      *  A bunch of code is semi-hardcoded, this is because I am not sure how I want to implement this yet.
      */
     
+    public static TransformManipulatorManager Instance { get; private set; }
+    
+    public event Action OnTransformHandleEnabled;
+    public event Action OnTransformHandleDisabled;
     
     
     [SerializeField] private RuntimeTransformHandle _transformHandle;
 
     private Camera _mainCamera;
-    
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     private void Start()
     {
         if (_transformHandle == null)
@@ -54,23 +70,18 @@ public class TransformManipulatorManager : MonoBehaviour
     {
         if (_transformHandle.gameObject.activeSelf)
         {
-            if (Input.GetKeyDown(KeyCode.W))
-            {
-                _transformHandle.type = HandleType.POSITION;
-            }
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                _transformHandle.type = HandleType.ROTATION;
-            }
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                _transformHandle.type = HandleType.SCALE;
-            }
-            
             if(Input.GetKeyDown(KeyCode.Escape))
             {
                 DisableTransformHandler();
             }
+        }
+    }
+    
+    public void SetHandleType(HandleType handleType)
+    {
+        if (_transformHandle.gameObject.activeSelf)
+        {
+            _transformHandle.type = handleType;
         }
     }
     
@@ -92,6 +103,7 @@ public class TransformManipulatorManager : MonoBehaviour
             {
                 if (hit.transform.gameObject.CompareTag("Selectable"))
                 {
+                    OnTransformHandleEnabled?.Invoke();
                     _transformHandle.gameObject.SetActive(true);
                     _transformHandle.target = hit.transform;
                     
@@ -110,6 +122,7 @@ public class TransformManipulatorManager : MonoBehaviour
     /// </summary>
     private void DisableTransformHandler()
     {
+        OnTransformHandleDisabled?.Invoke();
         _transformHandle.target = null;
         _transformHandle.type = HandleType.POSITION;
         _transformHandle.gameObject.SetActive(false);

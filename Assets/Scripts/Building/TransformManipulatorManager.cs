@@ -23,8 +23,13 @@ public class TransformManipulatorManager : MonoBehaviour
     
     
     [SerializeField] private RuntimeTransformHandle _transformHandle;
-
+    [SerializeField] private Material selectedMaterial;
+    [SerializeField] private Color outlineColor;
+    [SerializeField] private float outlineWidth;
+    
     private Camera _mainCamera;
+    
+    
 
     private void Awake()
     {
@@ -103,11 +108,11 @@ public class TransformManipulatorManager : MonoBehaviour
             {
                 if (hit.transform.gameObject.CompareTag("Selectable"))
                 {
-                    OnTransformHandleEnabled?.Invoke();
-                    _transformHandle.gameObject.SetActive(true);
-                    _transformHandle.target = hit.transform;
-                    
-                    GameUIManager.Instance.CanSwitchMenuState = false;
+                    if (_transformHandle.gameObject.activeSelf)
+                    {
+                        DisableTransformHandler();
+                    }
+                    SetSelectedObject(hit);
                 }
             }
             else
@@ -117,11 +122,35 @@ public class TransformManipulatorManager : MonoBehaviour
         }
     }
 
+    private void SetSelectedObject(RaycastHit hit)
+    {
+        OnTransformHandleEnabled?.Invoke();
+        _transformHandle.gameObject.SetActive(true);
+        _transformHandle.target = hit.transform;
+        
+        
+        Renderer renderer = hit.transform.gameObject.GetComponent<Renderer>();
+        Material[] materials = new Material[renderer.materials.Length + 1];
+        renderer.materials.CopyTo(materials, 0);
+        materials[materials.Length - 1] = selectedMaterial;
+        renderer.materials = materials;
+        
+      
+                    
+        GameUIManager.Instance.CanSwitchMenuState = false;
+    }
+
     /// <summary>
     /// Disables the transform handle and resets variables
     /// </summary>
     private void DisableTransformHandler()
     {
+        Renderer renderer = _transformHandle.target.gameObject.GetComponent<Renderer>();
+        Material[] materials = new Material[renderer.materials.Length - 1];
+        Array.Copy(renderer.materials, materials, materials.Length);
+        renderer.materials = materials;
+        
+        
         OnTransformHandleDisabled?.Invoke();
         _transformHandle.target = null;
         _transformHandle.type = HandleType.POSITION;

@@ -27,7 +27,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _OutlineWidth: 0.01
-    - _Width: 4.05
+    - _Width: 27.7
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _OutlineColor: {r: 1, g: 1, b: 1, a: 1}

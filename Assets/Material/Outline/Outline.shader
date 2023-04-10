@@ -12,9 +12,10 @@ Shader "Darren/OutlineShader"
 		Tags 
 		{
 			"IgnoreProjector"="True"
-			"Queue"="Transparent"
+			"Queue"="Transparent+10"
 		}
 
+		Zwrite Off
 		Cull Front
 
 		Pass 
@@ -60,3 +61,4 @@ Shader "Darren/OutlineShader"
 		}
 	}
 }
+

@@ -44,10 +44,11 @@ public class SteamLobby : MonoBehaviour
         gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnJoinRequest);
         lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
     }
-    
-    
+
     private void OnLobbyCreated(LobbyCreated_t callback)
     {
+        Debug.Log("Poep");
+        
         if (callback.m_eResult != EResult.k_EResultOK)
         {
             return;
@@ -91,6 +92,19 @@ public class SteamLobby : MonoBehaviour
     public void LeaveLobby()
     {
         SteamMatchmaking.LeaveLobby(new CSteamID(lobbyID));
+        SteamMatchmaking.DeleteLobbyData(new CSteamID(lobbyID), HostAddressKey);
+        
+        if(NetworkServer.active)
+        {
+            networkManager.StopHost();
+        }
+        else if(NetworkClient.isConnected)
+        {
+            networkManager.StopClient();
+        }
+        
+        networkManager.Reset();
+
     }
     
 }

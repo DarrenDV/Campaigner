@@ -33,4 +33,9 @@ public class MainMenuManager : MonoBehaviour
             Directory.CreateDirectory(Application.dataPath + "/SaveData");
         }
     }
+
+    public void HostButtonClick()
+    {
+        SteamLobby.Instance.HostLobby();
+    }
 }

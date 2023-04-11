@@ -128,6 +128,10 @@ public class BuildingManager : MonoBehaviour
         _ghostPlacer.SetGhostObject(go);
     }
 
+    /// <summary>
+    /// Updates the world bounds to fit the new object
+    /// </summary>
+    /// <param name="position"></param>
     private void UpdateWorldBounds(Vector3 position)
     {
         Vector3 minBounds = WorldInfo.Instance.GetMinBounds();
@@ -166,14 +170,28 @@ public class BuildingManager : MonoBehaviour
         
     }
     
+    /// <summary>
+    /// Destroys all built objects in the scene
+    /// </summary>
     public void ClearScene()
     {
         foreach (Transform child in _parent.transform)
         {
-            Destroy(child.gameObject);
+            if (NetworkServer.active)
+            {
+                NetworkServer.Destroy(child.gameObject);
+            }
+            else
+            {
+                Destroy(child.gameObject);
+            }
         }
     }
     
+    /// <summary>
+    /// Returns the parent object that houses all placed objects
+    /// </summary>
+    /// <returns></returns>
     public GameObject GetParent()
     {
         return _parent;

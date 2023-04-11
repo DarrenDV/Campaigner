@@ -5,6 +5,11 @@ namespace Campaigner.SavingLoading
 {
     public class SavingLoading 
     {
+        /// <summary>
+        /// Save the current scene
+        /// </summary>
+        /// <param name="saveName"></param>
+        /// <param name="parent"></param>
         public static void Save(string saveName, GameObject parent)
         {
             MapSceneData mapSceneData = new MapSceneData();
@@ -23,7 +28,11 @@ namespace Campaigner.SavingLoading
         
             SaveMapSceneData(mapSceneData);
         }
-
+        
+        /// <summary>
+        /// Saves mapSceneData to a json file
+        /// </summary>
+        /// <param name="mapSceneData"></param>
         private static void SaveMapSceneData(MapSceneData mapSceneData)
         {
             string json = JsonUtility.ToJson(mapSceneData);
@@ -34,7 +43,10 @@ namespace Campaigner.SavingLoading
             File.WriteAllText(path, json);
         }
 
-
+        /// <summary>
+        /// Opens the save file and loads the scene
+        /// </summary>
+        /// <param name="fileName"></param>
         public static void Load(string fileName)
         {
             MapSceneData mapSceneData = LoadMapSceneData(fileName);
@@ -55,7 +67,12 @@ namespace Campaigner.SavingLoading
                 BuildingManager.Instance.PlaceObject(gameObjectData.name, gameObjectData.position, gameObjectData.rotation, gameObjectData.scale);
             }
         }
-
+    
+        /// <summary>
+        /// Gets the json file and converts it to a MapSceneData object
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         private static MapSceneData LoadMapSceneData(string fileName)
         {
             string path = Application.dataPath + "/SaveData/" + fileName + ".json";

@@ -4,6 +4,11 @@ using UnityEngine;
 
 public class GenerateSnappingPoints : MonoBehaviour
 {
+    /*
+     * Snapping points are used for snapping objects to each other in building mode. Each object has 6 snapping points, one on each face.
+     * If the object is not a cube or variant of that, we use the center and bounds to draw an imaginary cube around the object and set the points on the center of each face.
+     */
+    
     public List<GameObject> snapPoints = new List<GameObject>();
     
     void Start()

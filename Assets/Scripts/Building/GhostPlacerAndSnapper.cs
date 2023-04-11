@@ -13,16 +13,16 @@ public class GhostPlacerAndSnapper : MonoBehaviour
     private GameObject _ghostObject;
     private GhostObject _ghostObjectScript;
     
-    private Camera mainCam;
+    private Camera _mainCam;
     
     public bool hasSnapped = false;
     
     
     private void Start()
     {
-        if (mainCam == null)
+        if (_mainCam == null)
         {
-            mainCam = Camera.main;
+            _mainCam = Camera.main;
         }
     }
 
@@ -223,7 +223,7 @@ public class GhostPlacerAndSnapper : MonoBehaviour
     /// <returns></returns>
     private Vector3 GetTargetPosition()
     {            
-        Ray ray = mainCam.ScreenPointToRay(Input.mousePosition);
+        Ray ray = _mainCam.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
             
         if (Physics.Raycast(ray, out hit))

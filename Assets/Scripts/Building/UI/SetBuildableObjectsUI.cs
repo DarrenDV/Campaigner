@@ -11,11 +11,17 @@ public class SetBuildableObjectsUI : MonoBehaviour
     
     [SerializeField] private List<BuildableObject> buildableObjects = new List<BuildableObject>();
     
-    void Start()
+    
+    private void Start()
     {
-        List<GameObject> placeableObjects = new List<GameObject>();
+        SetUI();
+    }
+
+    private void SetUI()
+    {
+        List<GameObject> placeableObjects;
         
-        placeableObjects = Resources.LoadAll<GameObject>("Prefabs").ToList();
+        placeableObjects = Resources.LoadAll<GameObject>($"Prefabs").ToList();
 
         foreach (GameObject prefab in placeableObjects)
         {

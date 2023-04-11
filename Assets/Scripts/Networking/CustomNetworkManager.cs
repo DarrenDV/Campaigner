@@ -23,7 +23,7 @@ public class CustomNetworkManager : NetworkManager
     public ObservableCollection<PlayerObjectController> GamePlayers = new ObservableCollection<PlayerObjectController>();
     
     [SerializeField] public PlayerObjectController localPlayer; //The local player object can be used to get a direct reference to their rights
-
+    
     public override void OnServerAddPlayer(NetworkConnectionToClient conn) //This function is being called when a player joins a lobby.
     {
         PlayerObjectController player = Instantiate(playerObjectController);
@@ -64,7 +64,13 @@ public class CustomNetworkManager : NetworkManager
         }
         
     }
-    
+
+    public override void OnApplicationQuit()
+    {
+        SteamLobby.Instance.LeaveLobby();
+        base.OnApplicationQuit();
+    }
+
     //These 3 are just used to look at GamePlayers in the inspector
     private void OnEnable()
     {

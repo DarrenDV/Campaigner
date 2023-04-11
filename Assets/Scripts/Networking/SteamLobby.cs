@@ -21,7 +21,7 @@ public class SteamLobby : MonoBehaviour
     protected Callback<LobbyCreated_t> lobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> gameLobbyJoinRequested;
     protected Callback<LobbyEnter_t> lobbyEntered;
-    
+
     public ulong lobbyID;
     private const string HostAddressKey = "HostAddress";
     private CustomNetworkManager networkManager;
@@ -86,6 +86,11 @@ public class SteamLobby : MonoBehaviour
         networkManager.networkAddress = SteamMatchmaking.GetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), HostAddressKey);
         
         networkManager.StartClient();
+    }
+    
+    public void LeaveLobby()
+    {
+        SteamMatchmaking.LeaveLobby(new CSteamID(lobbyID));
     }
     
 }

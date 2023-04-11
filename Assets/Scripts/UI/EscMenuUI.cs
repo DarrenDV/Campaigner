@@ -40,6 +40,11 @@ public class EscMenuUI : MonoBehaviour
 
     public void BackToMainMenu()
     {
+        if (SteamLobby.Instance != null)
+        {
+            SteamLobby.Instance.LeaveLobby();
+        }
+        
         GameUIManager.Instance.BackToMainMenu();
     }
 
@@ -47,4 +52,5 @@ public class EscMenuUI : MonoBehaviour
     {
         GameUIManager.Instance.OnGameMenuStateChanged -= MenuStateSwitched;
     }
+    
 }

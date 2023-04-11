@@ -145,6 +145,11 @@ public class TransformManipulatorManager : MonoBehaviour
     /// </summary>
     private void DisableTransformHandler()
     {
+        if (_transformHandle.target == null)
+        {
+            return;
+        }
+        
         Renderer renderer = _transformHandle.target.gameObject.GetComponent<Renderer>();
         Material[] materials = new Material[renderer.materials.Length - 1];
         Array.Copy(renderer.materials, materials, materials.Length);

@@ -94,22 +94,24 @@ public class SteamLobby : MonoBehaviour
     public void LeaveLobby()
     {
         SteamMatchmaking.LeaveLobby(new CSteamID(lobbyID));
-        SteamMatchmaking.DeleteLobbyData(new CSteamID(lobbyID), HostAddressKey);
+        //SteamMatchmaking.DeleteLobbyData(new CSteamID(lobbyID), HostAddressKey);
         
-        if(NetworkServer.active)
-        {
+        
+        //if(NetworkServer.active)
+        //{
             //networkManager.StopHost();
             CustomNetworkManager.Instance.StopHost();
-        }
-        else if(NetworkClient.isConnected)
-        {
+        //}
+        //else if(NetworkClient.isConnected)
+        //{
             //networkManager.StopClient();
             CustomNetworkManager.Instance.StopClient();
-        }
+        //}
+        
         
         //Destroy(this.gameObject);
         
-        CustomNetworkManager.Instance.Reset();
+        //CustomNetworkManager.Instance.Reset();
         
         
         

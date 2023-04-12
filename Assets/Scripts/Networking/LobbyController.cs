@@ -57,7 +57,7 @@ public class LobbyController : MonoBehaviour
     
     public void UpdateLobbyName()
     {
-        lobbyID = CustomNetworkManager.Instance.GetComponent<SteamLobby>().lobbyID;
+        lobbyID = SteamLobby.Instance.lobbyID;
         lobbyText.text = SteamMatchmaking.GetLobbyData(new CSteamID(lobbyID), "name");
     }
 

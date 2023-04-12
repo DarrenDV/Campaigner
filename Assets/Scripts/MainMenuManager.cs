@@ -22,8 +22,6 @@ public class MainMenuManager : MonoBehaviour
     private void Start()
     {
         FolderStructure();
-        
-        Debug.Log(Application.dataPath);
     }
 
     private void FolderStructure()

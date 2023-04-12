@@ -69,12 +69,25 @@ namespace Mirror.FizzySteam
                 connectedComplete = new TaskCompletionSource<Task>();
                 OnConnected += SetConnectedComplete;
 
+                
+                
+                Debug.Log(hostSteamID);
+                
+                
+                
                 SteamNetworkingIdentity smi = new SteamNetworkingIdentity();
                 smi.SetSteamID(hostSteamID);
 
+                
+                Debug.Log(smi.GetSteamID());
+                
+                
                 SteamNetworkingConfigValue_t[] options = new SteamNetworkingConfigValue_t[] { };
                 HostConnection = SteamNetworkingSockets.ConnectP2P(ref smi, 0, options.Length, options);
 
+                Debug.Log(HostConnection);
+                
+                
                 Task connectedCompleteTask = connectedComplete.Task;
                 Task timeOutTask = Task.Delay(ConnectionTimeout, cancelToken.Token);
 

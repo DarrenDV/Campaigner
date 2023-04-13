@@ -80,11 +80,6 @@ public class PlayerObjectController : NetworkBehaviour
 
     public void Quit()
     {
-        if (isServer)
-        {
-           RpcQuit();
-        }
-        
         //Set the offline scene to null
         CustomNetworkManager.Instance.offlineScene = "";
 
@@ -107,11 +102,5 @@ public class PlayerObjectController : NetworkBehaviour
         }
     }
     
-    [ClientRpc]
-    public void RpcQuit()
-    {
-        Debug.Log("Quitting");
-        Quit();
-    }
 
 }

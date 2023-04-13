@@ -21,6 +21,7 @@ public class SteamLobby : MonoBehaviour
     protected Callback<LobbyCreated_t> lobbyCreated;
     protected Callback<GameLobbyJoinRequested_t> gameLobbyJoinRequested;
     protected Callback<LobbyEnter_t> lobbyEntered;
+    protected Callback<SteamNetConnectionStatusChangedCallback_t> connectionStatusChanged;
 
     public ulong lobbyID;
     private const string HostAddressKey = "HostAddress";
@@ -42,6 +43,8 @@ public class SteamLobby : MonoBehaviour
         lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
         gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnJoinRequest);
         lobbyEntered = Callback<LobbyEnter_t>.Create(OnLobbyEntered);
+        connectionStatusChanged = Callback<SteamNetConnectionStatusChangedCallback_t>.Create(ConnectionStatusChanged);
+        
     }
 
     private void OnLobbyCreated(LobbyCreated_t callback)
@@ -76,6 +79,18 @@ public class SteamLobby : MonoBehaviour
         Debug.Log("My id: "+SteamUser.GetSteamID());
         
         SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
+    }
+    
+    private void ConnectionStatusChanged(SteamNetConnectionStatusChangedCallback_t callback)
+    {
+        Debug.Log("Connection status changed!");
+        if(callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer ||
+           callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally)
+        {
+            Debug.Log("Connection closed!");
+            LeaveLobby();
+            CustomNetworkManager.Instance.StopClient();
+        }
     }
 
     private void OnLobbyEntered(LobbyEnter_t callback)

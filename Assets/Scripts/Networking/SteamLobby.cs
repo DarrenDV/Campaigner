@@ -83,13 +83,20 @@ public class SteamLobby : MonoBehaviour
     
     private void ConnectionStatusChanged(SteamNetConnectionStatusChangedCallback_t callback)
     {
-        Debug.Log("Connection status changed!");
-        if(callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer ||
-           callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally)
+        Debug.Log("Connection status changed! It's now: " + callback.m_info.m_eState);
+        if(callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer || callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally || callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_None)
         {
             Debug.Log("Connection closed!");
             LeaveLobby();
-            CustomNetworkManager.Instance.StopClient();
+            
+            if(NetworkServer.active)
+            {
+                CustomNetworkManager.Instance.StopHost();
+            }
+            else if (NetworkClient.isConnected)
+            {
+                CustomNetworkManager.Instance.StopClient();
+            }
         }
     }
 
@@ -113,18 +120,16 @@ public class SteamLobby : MonoBehaviour
     public void LeaveLobby()
     {
 
+        Debug.Log("Leaving lobby!");
         SteamMatchmaking.LeaveLobby(new CSteamID(lobbyID));
-
-        Debug.Log("LobbyOwnerid 1: "+SteamMatchmaking.GetLobbyOwner(new CSteamID(lobbyID)));
-        Debug.Log("My id: "+SteamUser.GetSteamID());
+        
         
         if (SteamMatchmaking.GetLobbyOwner(new CSteamID(lobbyID)) == SteamUser.GetSteamID())
         {
-            Debug.Log("Lobby owner leaving, deleting lobby");
+            Debug.Log("Deleting lobby data!");
             SteamMatchmaking.DeleteLobbyData(new CSteamID(lobbyID), HostAddressKey);
         }
-        
-        Debug.Log("Lovvyownerbid 2: "+SteamMatchmaking.GetLobbyOwner(new CSteamID(lobbyID)));
+
         
         
         //if(NetworkServer.active)

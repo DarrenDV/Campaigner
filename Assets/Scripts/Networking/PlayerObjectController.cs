@@ -40,6 +40,11 @@ public class PlayerObjectController : NetworkBehaviour
             LobbyController.Instance.UpdateUIElements();
             LobbyController.Instance.UpdateLobbyName();
         }
+        
+        if(PlayerSteamID == SteamUser.GetSteamID().m_SteamID)
+        {
+            CustomNetworkManager.Instance.localPlayer = this;
+        }
     }
 
     public override void OnStartClient()

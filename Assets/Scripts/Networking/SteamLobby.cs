@@ -5,6 +5,7 @@ using Mirror;
 using Steamworks;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class SteamLobby : MonoBehaviour
 {
@@ -85,9 +86,14 @@ public class SteamLobby : MonoBehaviour
     
     private void ConnectionStatusChanged(SteamNetConnectionStatusChangedCallback_t callback)
     {
+        if (NetworkServer.active)
+        {
+            return;
+        }
+        
         
         Debug.Log("Connection status changed! It's now: " + callback.m_info.m_eState);
-        if(callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer || callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally || (callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_None && _connected))
+        if(callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer || callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally || callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_None)
         {
             Debug.Log("Connection closed!");
             LeaveLobby();
@@ -100,14 +106,18 @@ public class SteamLobby : MonoBehaviour
             {
                 CustomNetworkManager.Instance.StopClient();
             }
+
+            if (SceneManager.GetActiveScene().ToString() != "MenuScene")
+            {
+                SceneManager.LoadScene("MenuScene");
+            }
             
-            _connected = false;
+            CustomNetworkManager.Instance.Reset();
         }
         
         if(callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connected)
         {
-            //Debug.Log("Connected!");
-            _connected = true;
+            Debug.Log("Connected!");
         }
     }
 

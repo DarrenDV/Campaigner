@@ -41,13 +41,7 @@ public class CustomNetworkManager : NetworkManager
         {
             player.PlayerType = PlayerType.Player;
         }
-        
-        //Check if the player is the local player and set the localPlayer variable
-        if (player.PlayerSteamID == SteamUser.GetSteamID().m_SteamID)
-        {
-            localPlayer = player;
-        }
-        
+
         NetworkServer.AddPlayerForConnection(conn, player.gameObject);
     }
 
@@ -86,6 +80,14 @@ public class CustomNetworkManager : NetworkManager
     {
         players.Clear();
         players = GamePlayers.ToList();
+    }
+
+    public override void Reset()
+    {
+        players.Clear();
+        GamePlayers.Clear();
+        
+        base.Reset();
     }
     
 }

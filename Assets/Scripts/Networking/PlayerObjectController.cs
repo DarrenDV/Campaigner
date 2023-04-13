@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using Steamworks;
+using UnityEngine.SceneManagement;
 
 public class PlayerObjectController : NetworkBehaviour
 {
@@ -76,5 +77,41 @@ public class PlayerObjectController : NetworkBehaviour
             CustomNetworkManager.Instance.GamePlayers.RemoveAt(CustomNetworkManager.Instance.GamePlayers.Count - 1);
         }
     }
+
+    public void Quit()
+    {
+        if (isServer)
+        {
+           RpcQuit();
+        }
+        
+        //Set the offline scene to null
+        CustomNetworkManager.Instance.offlineScene = "";
+
+        //Make the active scene the offline scene
+        SceneManager.LoadScene("MenuScene");
+
+        //Leave Steam Lobby
+        SteamLobby.Instance.LeaveLobby();
+
+        if (isOwned)
+        {
+            if (isServer)
+            {
+                CustomNetworkManager.Instance.StopHost();
+            }
+            else
+            {
+                CustomNetworkManager.Instance.StopClient();
+            }
+        }
+    }
     
+    [ClientRpc]
+    public void RpcQuit()
+    {
+        Debug.Log("Quitting");
+        Quit();
+    }
+
 }

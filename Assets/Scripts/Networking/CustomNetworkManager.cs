@@ -87,4 +87,5 @@ public class CustomNetworkManager : NetworkManager
         players.Clear();
         players = GamePlayers.ToList();
     }
+    
 }

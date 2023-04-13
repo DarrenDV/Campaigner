@@ -38,7 +38,6 @@ public class SteamLobby : MonoBehaviour
             Instance = this;
         }
         
-        //networkManager = GetComponent<CustomNetworkManager>();
         
         lobbyCreated = Callback<LobbyCreated_t>.Create(OnLobbyCreated);
         gameLobbyJoinRequested = Callback<GameLobbyJoinRequested_t>.Create(OnJoinRequest);
@@ -54,17 +53,17 @@ public class SteamLobby : MonoBehaviour
         
         Debug.Log("Lobby created!");
         
-        //networkManager.StartHost();
         CustomNetworkManager.Instance.StartHost();
         
         SteamMatchmaking.SetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), HostAddressKey, SteamUser.GetSteamID().ToString());
         SteamMatchmaking.SetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), "name", SteamFriends.GetPersonaName().ToString() + "'s Lobby");
         
+        Debug.Log("Lobby created with id: " + callback.m_ulSteamIDLobby);
+        
     }
     
     public void HostLobby()
     {
-        //SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, networkManager.maxConnections);
         SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, CustomNetworkManager.Instance.maxConnections);
     }
 
@@ -72,11 +71,18 @@ public class SteamLobby : MonoBehaviour
     {
         Debug.Log("Join request!");
         
+        Debug.Log("OnJoinRequest: " + callback.m_steamIDLobby);
+        
+        Debug.Log("My id: "+SteamUser.GetSteamID());
+        
         SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
     }
 
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
+        Debug.Log("Lobby entered!");
+        Debug.Log("OnLobbyEntered: " + callback.m_ulSteamIDLobby);
+        
         lobbyID = callback.m_ulSteamIDLobby;
 
         if(NetworkServer.active)
@@ -84,39 +90,43 @@ public class SteamLobby : MonoBehaviour
             return;
         }
         
-        //networkManager.networkAddress = SteamMatchmaking.GetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), HostAddressKey);
         CustomNetworkManager.Instance.networkAddress = SteamMatchmaking.GetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), HostAddressKey);
-        
-        //networkManager.StartClient();
+
         CustomNetworkManager.Instance.StartClient();
     }
     
     public void LeaveLobby()
     {
-        SteamMatchmaking.LeaveLobby(new CSteamID(lobbyID)); 
 
+        SteamMatchmaking.LeaveLobby(new CSteamID(lobbyID));
+
+        Debug.Log("LobbyOwnerid 1: "+SteamMatchmaking.GetLobbyOwner(new CSteamID(lobbyID)));
+        Debug.Log("My id: "+SteamUser.GetSteamID());
+        
         if (SteamMatchmaking.GetLobbyOwner(new CSteamID(lobbyID)) == SteamUser.GetSteamID())
         {
             Debug.Log("Lobby owner leaving, deleting lobby");
             SteamMatchmaking.DeleteLobbyData(new CSteamID(lobbyID), HostAddressKey);
         }
         
+        Debug.Log("Lovvyownerbid 2: "+SteamMatchmaking.GetLobbyOwner(new CSteamID(lobbyID)));
+        
         
         //if(NetworkServer.active)
         //{
             //networkManager.StopHost();
-            CustomNetworkManager.Instance.StopHost();
+            //CustomNetworkManager.Instance.StopHost();
         //}
         //else if(NetworkClient.isConnected)
         //{
             //networkManager.StopClient();
-            CustomNetworkManager.Instance.StopClient();
+            //CustomNetworkManager.Instance.StopClient();
         //}
         
         
         //Destroy(this.gameObject);
         
-        CustomNetworkManager.Instance.Reset();
+        //CustomNetworkManager.Instance.Reset();
         
         
         

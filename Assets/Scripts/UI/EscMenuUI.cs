@@ -40,12 +40,7 @@ public class EscMenuUI : MonoBehaviour
 
     public void BackToMainMenu()
     {
-        if (SteamLobby.Instance != null)
-        {
-            SteamLobby.Instance.LeaveLobby();
-        }
-        
-        GameUIManager.Instance.BackToMainMenu();
+        CustomNetworkManager.Instance.localPlayer.Quit();
     }
 
     private void OnDestroy()

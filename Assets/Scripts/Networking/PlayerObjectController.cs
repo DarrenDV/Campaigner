@@ -49,6 +49,14 @@ public class PlayerObjectController : NetworkBehaviour
 
     public override void OnStartClient()
     {
+        if (CustomNetworkManager.Instance.GamePlayers.Count > 0)
+        {
+            if (CustomNetworkManager.Instance.GamePlayers[0] == null)
+            {
+                CustomNetworkManager.Instance.GamePlayers.Clear();
+            }
+        }
+        
         CustomNetworkManager.Instance.GamePlayers.Add(this);
 
         if (LobbyController.Instance != null)

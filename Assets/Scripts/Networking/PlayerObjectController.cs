@@ -49,6 +49,7 @@ public class PlayerObjectController : NetworkBehaviour
 
     public override void OnStartClient()
     {
+        //This is a scuffed way to make sure there are no null values in the list, this happens when the scene changes
         if (CustomNetworkManager.Instance.GamePlayers.Count > 0)
         {
             if (CustomNetworkManager.Instance.GamePlayers[0] == null)

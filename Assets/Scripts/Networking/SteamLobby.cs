@@ -6,6 +6,7 @@ using Steamworks;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using UnityEngine.Serialization;
 
 public class SteamLobby : MonoBehaviour
 {
@@ -26,9 +27,8 @@ public class SteamLobby : MonoBehaviour
 
     public ulong lobbyID;
     private const string HostAddressKey = "HostAddress";
-    //private CustomNetworkManager networkManager;
-
-    private bool _connected = false;
+    
+    [SerializeField] private bool debugMode = true;
 
     private void Start()
     {
@@ -56,15 +56,21 @@ public class SteamLobby : MonoBehaviour
         {
             return;
         }
-        
-        Debug.Log("Lobby created!");
+
+        if (debugMode)
+        {
+            Debug.Log("Lobby created!");
+        }
         
         CustomNetworkManager.Instance.StartHost();
         
         SteamMatchmaking.SetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), HostAddressKey, SteamUser.GetSteamID().ToString());
         SteamMatchmaking.SetLobbyData(new CSteamID(callback.m_ulSteamIDLobby), "name", SteamFriends.GetPersonaName().ToString() + "'s Lobby");
-        
-        Debug.Log("Lobby created with id: " + callback.m_ulSteamIDLobby);
+
+        if (debugMode)
+        {
+            Debug.Log("Lobby created with id: " + callback.m_ulSteamIDLobby);
+        }
         
     }
     
@@ -75,11 +81,10 @@ public class SteamLobby : MonoBehaviour
 
     private void OnJoinRequest(GameLobbyJoinRequested_t callback)
     {
-        Debug.Log("Join request!");
-        
-        Debug.Log("OnJoinRequest: " + callback.m_steamIDLobby);
-        
-        Debug.Log("My id: "+SteamUser.GetSteamID());
+        if (debugMode)
+        {
+            Debug.Log("Join request!");
+        }
         
         SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
     }
@@ -90,12 +95,20 @@ public class SteamLobby : MonoBehaviour
         {
             return;
         }
+
+
+        if (debugMode)
+        {
+            Debug.Log("Connection status changed! It's now: " + callback.m_info.m_eState);
+        }
         
-        
-        Debug.Log("Connection status changed! It's now: " + callback.m_info.m_eState);
         if(callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer || callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally || callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_None)
         {
-            Debug.Log("Connection closed!");
+            if (debugMode)
+            {
+                Debug.Log("Connection closed!");
+            }
+            
             LeaveLobby();
             
             if(NetworkServer.active)
@@ -117,14 +130,20 @@ public class SteamLobby : MonoBehaviour
         
         if(callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connected)
         {
-            Debug.Log("Connected!");
+            if (debugMode)
+            {
+                Debug.Log("Connected!");
+            }
         }
     }
 
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
-        Debug.Log("Lobby entered!");
-        Debug.Log("OnLobbyEntered: " + callback.m_ulSteamIDLobby);
+        if (debugMode)
+        {
+            Debug.Log("Lobby entered!");
+            Debug.Log("OnLobbyEntered: " + callback.m_ulSteamIDLobby);
+        }
         
         lobbyID = callback.m_ulSteamIDLobby;
 
@@ -141,7 +160,11 @@ public class SteamLobby : MonoBehaviour
     public void LeaveLobby()
     {
 
-        Debug.Log("Leaving lobby!");
+        if (debugMode)
+        {
+            Debug.Log("Leaving lobby!");
+        }
+        
         SteamMatchmaking.LeaveLobby(new CSteamID(lobbyID));
         
         

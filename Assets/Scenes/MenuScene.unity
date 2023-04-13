@@ -885,6 +885,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lobbyID: 0
+  debugMode: 1
 --- !u!1 &1975247312
 GameObject:
   m_ObjectHideFlags: 0

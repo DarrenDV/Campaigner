@@ -27,6 +27,8 @@ public class SteamLobby : MonoBehaviour
     private const string HostAddressKey = "HostAddress";
     //private CustomNetworkManager networkManager;
 
+    private bool _connected = false;
+
     private void Start()
     {
         if(!SteamManager.Initialized)
@@ -83,8 +85,9 @@ public class SteamLobby : MonoBehaviour
     
     private void ConnectionStatusChanged(SteamNetConnectionStatusChangedCallback_t callback)
     {
+        
         Debug.Log("Connection status changed! It's now: " + callback.m_info.m_eState);
-        if(callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer || callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally || callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_None)
+        if(callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ClosedByPeer || callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_ProblemDetectedLocally || (callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_None && _connected))
         {
             Debug.Log("Connection closed!");
             LeaveLobby();
@@ -97,6 +100,14 @@ public class SteamLobby : MonoBehaviour
             {
                 CustomNetworkManager.Instance.StopClient();
             }
+            
+            _connected = false;
+        }
+        
+        if(callback.m_info.m_eState == ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connected)
+        {
+            //Debug.Log("Connected!");
+            _connected = true;
         }
     }
 

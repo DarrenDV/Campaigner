@@ -58,10 +58,12 @@ public class BuildingManager : NetworkBehaviour
 
                 if (NetworkServer.active)
                 {
+                    Debug.Log("Poep");
                     PlaceObject(go.name, go.transform);
                 }
                 else if(NetworkClient.isConnected)
                 {
+                    Debug.Log("Kak");
                     CmdPlaceItem(go.name, go.transform.position, go.transform.rotation, go.transform.localScale);
                 }
                 
@@ -81,7 +83,7 @@ public class BuildingManager : NetworkBehaviour
         }
     }
     
-    [Command]
+    [Command(requiresAuthority = false)]
     private void CmdPlaceItem(string objectName, Vector3 position, Quaternion rotation, Vector3 scale)
     {
         Debug.Log("Placing item");

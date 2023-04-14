@@ -84,6 +84,7 @@ public class BuildingManager : NetworkBehaviour
     [Command]
     private void CmdPlaceItem(string objectName, Vector3 position, Quaternion rotation, Vector3 scale)
     {
+        Debug.Log("Placing item");
         PlaceObject(objectName, position, rotation, scale);
     }
     

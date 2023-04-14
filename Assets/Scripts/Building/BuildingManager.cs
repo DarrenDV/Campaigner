@@ -5,7 +5,7 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class BuildingManager : NetworkBehaviour
+public class BuildingManager : MonoBehaviour
 {
     public static BuildingManager Instance { get; private set; }
 
@@ -56,17 +56,23 @@ public class BuildingManager : NetworkBehaviour
             {
                 GameObject go = _ghostPlacer.GetGhostObject();
 
-                if (NetworkServer.active)
+                
+                if (!NetworkServer.active && !NetworkClient.isConnected) //If we are not connected to a server, we can just place the object
                 {
-                    Debug.Log("Poep");
                     PlaceObject(go.name, go.transform);
                 }
-                else if(NetworkClient.isConnected)
+                else
                 {
-                    Debug.Log("Kak");
-                    CmdPlaceItem(go.name, go.transform.position, go.transform.rotation, go.transform.localScale);
+                    if (NetworkServer.active)
+                    {
+                        PlaceObject(go.name, go.transform);
+                    }
+                    else if(NetworkClient.isConnected)
+                    {
+                        NetworkCommands.Instance.CmdPlaceItem(go.name, go.transform.position, go.transform.rotation, go.transform.localScale);
+                    }
                 }
-                
+
                 _ghostPlacer.ClearGhostObject();
                 _ghostPlacer.enabled = false;
             }
@@ -82,15 +88,7 @@ public class BuildingManager : NetworkBehaviour
             placeableObjectsDict.Add(prefab.name, prefab);
         }
     }
-    
-    [Command(requiresAuthority = false)]
-    private void CmdPlaceItem(string objectName, Vector3 position, Quaternion rotation, Vector3 scale)
-    {
-        Debug.Log("Placing item");
-        PlaceObject(objectName, position, rotation, scale);
-    }
-    
-    
+
     /// <summary>
     /// Function called to place an object in the world
     /// </summary>

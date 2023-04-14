@@ -17,7 +17,7 @@ public class BuildingManager : MonoBehaviour
     private const string PREFABS_PATH = "Prefabs";
 
     public GameObject _parent;
-    private GhostPlacerAndSnapper _ghostPlacer;
+    public GhostPlacerAndSnapper ghostPlacer;
 
     public List<GameObject> spawnedObjects;
 
@@ -39,7 +39,7 @@ public class BuildingManager : MonoBehaviour
     private void Start()
     {
         SetPlaceableObjects();
-        _ghostPlacer = GetComponentInChildren<GhostPlacerAndSnapper>();
+        ghostPlacer = GetComponentInChildren<GhostPlacerAndSnapper>();
     }
 
     private void Update()
@@ -52,9 +52,9 @@ public class BuildingManager : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (_ghostPlacer.enabled && _ghostPlacer.GetGhostObject() != null && !UIUtils.Instance.IsPointerOverUIElement())
+            if (ghostPlacer.enabled && ghostPlacer.GetGhostObject() != null && !UIUtils.Instance.IsPointerOverUIElement())
             {
-                GameObject go = _ghostPlacer.GetGhostObject();
+                GameObject go = ghostPlacer.GetGhostObject();
 
                 
                 if (!NetworkServer.active && !NetworkClient.isConnected) //If we are not connected to a server, we can just place the object
@@ -73,8 +73,8 @@ public class BuildingManager : MonoBehaviour
                     }
                 }
 
-                _ghostPlacer.ClearGhostObject();
-                _ghostPlacer.enabled = false;
+                ghostPlacer.ClearGhostObject();
+                ghostPlacer.enabled = false;
             }
         }
     }
@@ -131,20 +131,19 @@ public class BuildingManager : MonoBehaviour
     /// <param name="objectName"></param>
     public void SpawnGhostObject(string objectName)
     {
-        if (_ghostPlacer.enabled && _ghostPlacer.GetGhostObject() != null)
+        if (ghostPlacer.enabled && ghostPlacer.GetGhostObject() != null)
         {
-            _ghostPlacer.ClearGhostObject();
+            ghostPlacer.ClearGhostObject();
         }
             
         
         GameObject go = Instantiate(placeableObjectsDict[objectName]);
         go.name = objectName;
-        go.AddComponent<GhostObject>();
         go.GetComponent<Renderer>().material = ghostMaterial;
         
 
-        _ghostPlacer.enabled = true;
-        _ghostPlacer.SetGhostObject(go);
+        ghostPlacer.enabled = true;
+        ghostPlacer.SetGhostObject(go);
     }
 
     /// <summary>

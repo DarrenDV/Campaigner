@@ -25,13 +25,22 @@ public class PlacedObject : NetworkBehaviour
     {
         snappingPointsGenerator = gameObject.AddComponent<GenerateSnappingPoints>();
         BuildingManager.Instance.spawnedObjects.Add(gameObject);
-        transform.SetParent(BuildingManager.Instance._parent.transform);
-        gameObject.tag = "Selectable";
+
+        if (!BuildingManager.Instance.ghostPlacer.GetGhostObject() == this.gameObject)
+        {
+            transform.SetParent(BuildingManager.Instance._parent.transform);
+            gameObject.tag = "Selectable";
+        }
+        
     }
     
     public void ObjectPlaced()
     {
         snappingPointsGenerator = GetComponent<GenerateSnappingPoints>();
     }
-    
+
+    public List<GameObject> GetSnapPoints()
+    {
+        return snappingPointsGenerator.snapPoints;
+    }
 }

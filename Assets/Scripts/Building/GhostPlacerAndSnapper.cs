@@ -11,7 +11,7 @@ public class GhostPlacerAndSnapper : MonoBehaviour
 
     private GameObject _hookedSnapPoint;
     private GameObject _ghostObject;
-    private GhostObject _ghostObjectScript;
+    private PlacedObject _ghostObjectScript;
     
     private Camera _mainCam;
     
@@ -33,7 +33,7 @@ public class GhostPlacerAndSnapper : MonoBehaviour
     public void SetGhostObject(GameObject ghostObject)
     {
         _ghostObject = ghostObject;
-        _ghostObjectScript = _ghostObject.GetComponent<GhostObject>();
+        _ghostObjectScript = _ghostObject.GetComponent<PlacedObject>();
 
         GameUIManager.Instance.CanSwitchMenuState = false;
     }

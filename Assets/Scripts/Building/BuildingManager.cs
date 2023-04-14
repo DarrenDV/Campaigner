@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Mirror;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class BuildingManager : MonoBehaviour
 {
@@ -15,8 +16,10 @@ public class BuildingManager : MonoBehaviour
 
     private const string PREFABS_PATH = "Prefabs";
 
-    private GameObject _parent;
+    public GameObject _parent;
     private GhostPlacerAndSnapper _ghostPlacer;
+
+    public List<GameObject> spawnedObjects;
 
     private void Awake()
     {
@@ -96,12 +99,12 @@ public class BuildingManager : MonoBehaviour
         go.transform.rotation = rotation;
         go.transform.localScale = scale;
 
-        go.AddComponent<GenerateSnappingPoints>();
-        go.GetComponent<PlacedObject>().ObjectPlaced();
+        // go.AddComponent<GenerateSnappingPoints>();
+        // go.GetComponent<PlacedObject>().ObjectPlaced();
         
-        go.tag = "Selectable";
+        //go.tag = "Selectable";
         
-        go.transform.SetParent(_parent.transform);
+        //go.transform.SetParent(_parent.transform);
         
         UpdateWorldBounds(position);
     }

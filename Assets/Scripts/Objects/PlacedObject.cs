@@ -1,8 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
-public class PlacedObject : MonoBehaviour
+public class PlacedObject : NetworkBehaviour
 {
     /*
      *  This class is / will be used to store data about placed objects in the scene.
@@ -15,11 +16,19 @@ public class PlacedObject : MonoBehaviour
      */
     
     
-    public string ObjectName;
+    [SyncVar] public string ObjectName;
     public string notes;
     
     public GenerateSnappingPoints snappingPointsGenerator;
 
+    private void Start()
+    {
+        snappingPointsGenerator = gameObject.AddComponent<GenerateSnappingPoints>();
+        BuildingManager.Instance.spawnedObjects.Add(gameObject);
+        transform.SetParent(BuildingManager.Instance._parent.transform);
+        gameObject.tag = "Selectable";
+    }
+    
     public void ObjectPlaced()
     {
         snappingPointsGenerator = GetComponent<GenerateSnappingPoints>();

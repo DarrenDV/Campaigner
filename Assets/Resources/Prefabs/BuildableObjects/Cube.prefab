@@ -112,7 +112,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cb3cdb2278159b4283c9b0655e3dda8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncDirection: 0
+  syncMode: 0
+  syncInterval: 0.1
+  ObjectName: 
   notes: 
+  snappingPointsGenerator: {fileID: 0}
 --- !u!114 &7006966994947877873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -142,7 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ff3ba0becae47b8b9381191598957c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  syncDirection: 0
+  syncDirection: 1
   syncMode: 0
   syncInterval: 0
   target: {fileID: 4570347083554751484}

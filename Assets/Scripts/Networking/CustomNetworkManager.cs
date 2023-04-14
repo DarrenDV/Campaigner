@@ -58,7 +58,7 @@ public class CustomNetworkManager : NetworkManager
         }
         
     }
-
+    
     public override void OnApplicationQuit()
     {
         SteamLobby.Instance.LeaveLobby();

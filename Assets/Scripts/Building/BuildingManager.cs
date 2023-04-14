@@ -5,7 +5,7 @@ using Mirror;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class BuildingManager : MonoBehaviour
+public class BuildingManager : NetworkBehaviour
 {
     public static BuildingManager Instance { get; private set; }
 
@@ -55,7 +55,15 @@ public class BuildingManager : MonoBehaviour
             if (_ghostPlacer.enabled && _ghostPlacer.GetGhostObject() != null && !UIUtils.Instance.IsPointerOverUIElement())
             {
                 GameObject go = _ghostPlacer.GetGhostObject();
-                PlaceObject(go.name, go.transform);
+
+                if (NetworkServer.active)
+                {
+                    PlaceObject(go.name, go.transform);
+                }
+                else if(NetworkClient.isConnected)
+                {
+                    CmdPlaceItem(go.name, go.transform.position, go.transform.rotation, go.transform.localScale);
+                }
                 
                 _ghostPlacer.ClearGhostObject();
                 _ghostPlacer.enabled = false;
@@ -72,6 +80,13 @@ public class BuildingManager : MonoBehaviour
             placeableObjectsDict.Add(prefab.name, prefab);
         }
     }
+    
+    [Command]
+    private void CmdPlaceItem(string objectName, Vector3 position, Quaternion rotation, Vector3 scale)
+    {
+        PlaceObject(objectName, position, rotation, scale);
+    }
+    
     
     /// <summary>
     /// Function called to place an object in the world

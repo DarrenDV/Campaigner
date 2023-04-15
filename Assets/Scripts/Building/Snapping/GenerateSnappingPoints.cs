@@ -37,8 +37,15 @@ public class GenerateSnappingPoints : MonoBehaviour
         int count = 0;
         foreach (Vector3 point in points)
         {
-            GameObject snapPoint = new GameObject();
-            //GameObject snapPoint = GameObject.CreatePrimitive(PrimitiveType.Sphere); //This is for debugging purposes
+            GameObject snapPoint = null;
+            if (BuildingManager.Instance.DebugSnapPoints)
+            {
+                snapPoint = GameObject.CreatePrimitive(PrimitiveType.Sphere); //This is for debugging purposes
+            }
+            else
+            {
+                snapPoint = new GameObject();
+            }
             snapPoint.tag = "SnapPoint";
             snapPoint.transform.position = point;
             snapPoint.AddComponent<BoxCollider>();

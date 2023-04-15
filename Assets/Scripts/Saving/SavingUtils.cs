@@ -27,6 +27,11 @@ public class SavingUtils
         return saveFiles;
     }
     
+    /// <summary>
+    /// Does the file exist in the SaveData folder
+    /// </summary>
+    /// <param name="fileName"></param>
+    /// <returns></returns>
     public static bool FileExists(string fileName)
     {
         string path = Application.dataPath + "/SaveData/" + fileName + ".json";

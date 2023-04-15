@@ -1,12 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 using Steamworks;
-using UnityEngine.UI;
-using TMPro;
 using UnityEngine.SceneManagement;
-using UnityEngine.Serialization;
+
 
 public class SteamLobby : MonoBehaviour
 {
@@ -50,6 +46,10 @@ public class SteamLobby : MonoBehaviour
         
     }
 
+    /// <summary>
+    /// Called when a lobby is created, starts the host and sets the lobby data, will only run for the host
+    /// </summary>
+    /// <param name="callback"></param>
     private void OnLobbyCreated(LobbyCreated_t callback)
     {
         if (callback.m_eResult != EResult.k_EResultOK)
@@ -74,11 +74,18 @@ public class SteamLobby : MonoBehaviour
         
     }
     
+    /// <summary>
+    /// Host a lobby, tells steam to create a lobby
+    /// </summary>
     public void HostLobby()
     {
         SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypeFriendsOnly, CustomNetworkManager.Instance.maxConnections);
     }
 
+    /// <summary>
+    /// Called when a player presses the join lobby button or accepts an invite from the host
+    /// </summary>
+    /// <param name="callback"></param>
     private void OnJoinRequest(GameLobbyJoinRequested_t callback)
     {
         if (debugMode)
@@ -89,9 +96,13 @@ public class SteamLobby : MonoBehaviour
         SteamMatchmaking.JoinLobby(callback.m_steamIDLobby);
     }
     
+    /// <summary>
+    /// Callback called every time a connection status changes in steam
+    /// </summary>
+    /// <param name="callback"></param>
     private void ConnectionStatusChanged(SteamNetConnectionStatusChangedCallback_t callback)
     {
-        if (NetworkServer.active)
+        if (NetworkServer.active) //Only run this as a client
         {
             return;
         }
@@ -137,6 +148,10 @@ public class SteamLobby : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Function called when steam accepted the lobby join request, starts the client and sets the network address
+    /// </summary>
+    /// <param name="callback"></param>
     private void OnLobbyEntered(LobbyEnter_t callback)
     {
         if (debugMode)
@@ -157,9 +172,11 @@ public class SteamLobby : MonoBehaviour
         CustomNetworkManager.Instance.StartClient();
     }
     
+    /// <summary>
+    /// Function called to leave a lobby in steam
+    /// </summary>
     public void LeaveLobby()
     {
-
         if (debugMode)
         {
             Debug.Log("Leaving lobby!");
@@ -173,27 +190,5 @@ public class SteamLobby : MonoBehaviour
             Debug.Log("Deleting lobby data!");
             SteamMatchmaking.DeleteLobbyData(new CSteamID(lobbyID), HostAddressKey);
         }
-
-        
-        
-        //if(NetworkServer.active)
-        //{
-            //networkManager.StopHost();
-            //CustomNetworkManager.Instance.StopHost();
-        //}
-        //else if(NetworkClient.isConnected)
-        //{
-            //networkManager.StopClient();
-            //CustomNetworkManager.Instance.StopClient();
-        //}
-        
-        
-        //Destroy(this.gameObject);
-        
-        //CustomNetworkManager.Instance.Reset();
-        
-        
-        
     }
-    
 }

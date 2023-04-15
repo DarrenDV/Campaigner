@@ -1,15 +1,10 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using UnityEngine;
-using Mirror;
 using Steamworks;
-using UnityEngine.UI;
 using System.Linq;
 using TMPro;
-using UnityEngine.Rendering;
+
 
 public class LobbyController : MonoBehaviour
 {
@@ -93,32 +88,21 @@ public class LobbyController : MonoBehaviour
             UpdatePlayerItem();
         }
         
-        //UpdateUIElements();
     }
 
     public void UpdateUIElements()
     {
-        if (LocalPlayerController != null)
+        if (LocalPlayerController == null) return;
+
+        if (LocalPlayerController.PlayerType != PlayerType.DungeonMaster) return;
+        
+        if (startGameButton != null)
         {
-            if(LocalPlayerController.PlayerType == PlayerType.DungeonMaster)
-            {
-                if (startGameButton != null)
-                {
-                    startGameButton.SetActive(true);    
-                }
-            }
+            startGameButton.SetActive(true);    
         }
     }
 
-    //This code is buggy so I decided to just set the Local player from it's own class. 
-    
-    // public void FindLocalPlayer()
-    // {
-    //     LocalPlayerObject = GameObject.Find("LocalGamePlayer"); //TODO Change to SteamFriends.GetPersonaName()
-    //     LocalPlayerController = LocalPlayerObject.GetComponent<PlayerObjectController>();
-    // }
-
-    public void CreateHostPlayerItem()
+    private void CreateHostPlayerItem()
     {
         foreach (PlayerObjectController player in CustomNetworkManager.Instance.GamePlayers)
         {
@@ -139,7 +123,7 @@ public class LobbyController : MonoBehaviour
         PlayerItemCreated = true;
     }
 
-    public void CreateClientPlayerItem()
+    private void CreateClientPlayerItem()
     {
         foreach (PlayerObjectController player in CustomNetworkManager.Instance.GamePlayers)
         {
@@ -162,24 +146,23 @@ public class LobbyController : MonoBehaviour
         PlayerItemCreated = true;
     }
 
-    public void UpdatePlayerItem()
+    private void UpdatePlayerItem()
     {
         foreach (PlayerObjectController player in CustomNetworkManager.Instance.GamePlayers)
         {
             foreach (PlayerListItem playerListItem in PlayerListItems)
             {
-                if (playerListItem.ConnectionID == player.ConnectionID)
-                {
-                    playerListItem.PlayerName = player.PlayerName;
-                    playerListItem.ConnectionID = player.ConnectionID;
-                    playerListItem.SetPlayerValues();
-                }
+                if (playerListItem.ConnectionID != player.ConnectionID) continue;
+                
+                playerListItem.PlayerName = player.PlayerName;
+                playerListItem.ConnectionID = player.ConnectionID;
+                playerListItem.SetPlayerValues();
             }
 
         }
     }
-    
-    public void RemovePlayerItem()
+
+    private void RemovePlayerItem()
     {
         List<PlayerListItem> playerListItemsToRemove = new List<PlayerListItem>();
         
@@ -190,15 +173,15 @@ public class LobbyController : MonoBehaviour
                 playerListItemsToRemove.Add(playerListItem);
             }
         }
+
+        if (playerListItemsToRemove.Count <= 0) return;
         
-        if(playerListItemsToRemove.Count > 0)
+        foreach (PlayerListItem playerListItem in playerListItemsToRemove)
         {
-            foreach (PlayerListItem playerListItem in playerListItemsToRemove)
-            {
-                PlayerListItems.Remove(playerListItem);
-                Destroy(playerListItem.gameObject);
-            }
+            PlayerListItems.Remove(playerListItem);
+            Destroy(playerListItem.gameObject);
         }
+        
     }
 
 

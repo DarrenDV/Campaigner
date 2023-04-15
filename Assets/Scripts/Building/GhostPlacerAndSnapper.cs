@@ -87,6 +87,10 @@ public class GhostPlacerAndSnapper : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Checks if the ghost object is close enough to a snap point to snap to it
+    /// </summary>
+    /// <param name="position"></param>
     private void SnapPointChecks(Vector3 position)
     {
         _closestOtherSnapPoint = ClosestPlacedObjectSnapPoint(ClosestPlacedObject(position), position);
@@ -108,6 +112,9 @@ public class GhostPlacerAndSnapper : MonoBehaviour
         }   
     }
 
+    /// <summary>
+    /// Set the position of the ghost object to that of the snap point
+    /// </summary>
     private void SetPosition()
     {
         _ghostObject.transform.position = _closestOtherSnapPoint.transform.position;
@@ -154,14 +161,12 @@ public class GhostPlacerAndSnapper : MonoBehaviour
 
         foreach (Collider collider in hitColliders)
         {
-            if (collider.CompareTag("Selectable"))
+            if (!collider.CompareTag("Selectable")) continue;
+            if(collider.gameObject == _ghostObject)
             {
-                if(collider.gameObject == _ghostObject)
-                {
-                    continue;
-                }
-                validObjects.Add(collider.gameObject);
+                continue;
             }
+            validObjects.Add(collider.gameObject);
         }
         
         return ClosestListObjectToVector(validObjects, position);
@@ -202,11 +207,10 @@ public class GhostPlacerAndSnapper : MonoBehaviour
         
         foreach (GameObject obj in objects)
         {
-            if(Vector3.Distance(obj.transform.position, location) < closestDistance)
-            {
-                closestDistance = Vector3.Distance(obj.transform.position, location);
-                closestObject = obj;
-            }
+            if (!(Vector3.Distance(obj.transform.position, location) < closestDistance)) continue;
+         
+            closestDistance = Vector3.Distance(obj.transform.position, location);
+            closestObject = obj;
         }
         
         return closestObject;

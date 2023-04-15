@@ -21,6 +21,11 @@ public class BuildingManager : MonoBehaviour
 
     public List<GameObject> spawnedObjects;
 
+    /// <summary>
+    /// Makes every object have visible snap points
+    /// </summary>
+    public bool DebugSnapPoints = false;
+
     private void Awake()
     {
         if (Instance == null)
@@ -52,33 +57,45 @@ public class BuildingManager : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            if (ghostPlacer.enabled && ghostPlacer.GetGhostObject() != null && !UIUtils.Instance.IsPointerOverUIElement())
-            {
-                GameObject go = ghostPlacer.GetGhostObject();
-
-                
-                if (!NetworkServer.active && !NetworkClient.isConnected) //If we are not connected to a server, we can just place the object
-                {
-                    PlaceObject(go.name, go.transform);
-                }
-                else
-                {
-                    if (NetworkServer.active)
-                    {
-                        PlaceObject(go.name, go.transform);
-                    }
-                    else if(NetworkClient.isConnected)
-                    {
-                        NetworkCommands.Instance.CmdPlaceItem(go.name, go.transform.position, go.transform.rotation, go.transform.localScale);
-                    }
-                }
-
-                ghostPlacer.ClearGhostObject();
-                ghostPlacer.enabled = false;
-            }
+            PlacingInput();
         }
     }
-    
+
+    /// <summary>
+    /// Functions called when the player presses the left mouse button regarding placing objects
+    /// </summary>
+    private void PlacingInput()
+    {
+        if (!ghostPlacer.enabled || ghostPlacer.GetGhostObject() == null || UIUtils.Instance.IsPointerOverUIElement())
+        {
+            return;
+        }
+        
+        GameObject go = ghostPlacer.GetGhostObject();
+
+        if (!NetworkServer.active && !NetworkClient.isConnected) //If we are not connected to a server, we can just place the object
+        {
+            PlaceObject(go.name, go.transform);
+        }
+        else
+        {
+            if (NetworkServer.active) //If we are the server, we can place the object
+            {
+                PlaceObject(go.name, go.transform);
+            }
+            else if(NetworkClient.isConnected) //If we are a client, we need to send a command to the server to place the object
+            {
+                NetworkCommands.Instance.CmdPlaceItem(go.name, go.transform.position, go.transform.rotation, go.transform.localScale);
+            }
+        }
+
+        ghostPlacer.ClearGhostObject();
+        ghostPlacer.enabled = false;
+    }
+
+    /// <summary>
+    /// Collects all the prefabs in the Resources/Prefabs folder and adds them to the placeableObjects list
+    /// </summary>
     private void SetPlaceableObjects()
     {
         placeableObjects = Resources.LoadAll<GameObject>(PREFABS_PATH).ToList();
@@ -99,6 +116,13 @@ public class BuildingManager : MonoBehaviour
         PlaceObject(objectName, _transform.position, _transform.rotation, _transform.localScale);
     }
 
+    /// <summary>
+    /// Place an object in the world with a specific position, rotation and scale
+    /// </summary>
+    /// <param name="objectName">The name of the prefab</param>
+    /// <param name="position"></param>
+    /// <param name="rotation"></param>
+    /// <param name="scale"></param>
     public void PlaceObject(string objectName, Vector3 position, Quaternion rotation, Vector3 scale)
     {
         GameObject go = Instantiate(placeableObjectsDict[objectName]);
@@ -114,13 +138,6 @@ public class BuildingManager : MonoBehaviour
         
         go.transform.rotation = rotation;
         go.transform.localScale = scale;
-
-        // go.AddComponent<GenerateSnappingPoints>();
-        // go.GetComponent<PlacedObject>().ObjectPlaced();
-        
-        //go.tag = "Selectable";
-        
-        //go.transform.SetParent(_parent.transform);
         
         UpdateWorldBounds(position);
     }

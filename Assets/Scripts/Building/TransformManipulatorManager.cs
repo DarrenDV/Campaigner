@@ -1,10 +1,7 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Campaigner.UI;
 using RuntimeHandle;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class TransformManipulatorManager : MonoBehaviour
 {   
@@ -73,12 +70,11 @@ public class TransformManipulatorManager : MonoBehaviour
 
     private void TransformInput()
     {
-        if (_transformHandle.gameObject.activeSelf)
+        if (!_transformHandle.gameObject.activeSelf) return;
+        
+        if(Input.GetKeyDown(KeyCode.Escape))
         {
-            if(Input.GetKeyDown(KeyCode.Escape))
-            {
-                DisableTransformHandler();
-            }
+            DisableTransformHandler();
         }
     }
     
@@ -106,14 +102,13 @@ public class TransformManipulatorManager : MonoBehaviour
             RaycastHit hit;
             if (Physics.Raycast(ray, out hit))
             {
-                if (hit.transform.gameObject.CompareTag("Selectable"))
+                if (!hit.transform.gameObject.CompareTag("Selectable")) return;
+                
+                if (_transformHandle.gameObject.activeSelf)
                 {
-                    if (_transformHandle.gameObject.activeSelf)
-                    {
-                        DisableTransformHandler();
-                    }
-                    SetSelectedObject(hit);
+                    DisableTransformHandler();
                 }
+                SetSelectedObject(hit);
             }
             else
             {
@@ -122,21 +117,22 @@ public class TransformManipulatorManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Sets the selected object and enables the transform handle
+    /// </summary>
+    /// <param name="hit"></param>
     private void SetSelectedObject(RaycastHit hit)
     {
         OnTransformHandleEnabled?.Invoke();
         _transformHandle.gameObject.SetActive(true);
         _transformHandle.target = hit.transform;
         
-        
         Renderer renderer = hit.transform.gameObject.GetComponent<Renderer>();
         Material[] materials = new Material[renderer.materials.Length + 1];
         renderer.materials.CopyTo(materials, 0);
         materials[materials.Length - 1] = selectedMaterial;
         renderer.materials = materials;
-        
-      
-                    
+
         GameUIManager.Instance.CanSwitchMenuState = false;
     }
 
@@ -154,7 +150,6 @@ public class TransformManipulatorManager : MonoBehaviour
         Material[] materials = new Material[renderer.materials.Length - 1];
         Array.Copy(renderer.materials, materials, materials.Length);
         renderer.materials = materials;
-        
         
         OnTransformHandleDisabled?.Invoke();
         _transformHandle.target = null;

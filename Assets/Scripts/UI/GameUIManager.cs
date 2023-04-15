@@ -49,6 +49,9 @@ namespace Campaigner.UI
             }
         }
 
+        /// <summary>
+        /// Sets the GameMenuState based on the current GameMenuState
+        /// </summary>
         private void EscapeHandler()
         {
             if (!CanSwitchMenuState)
@@ -93,15 +96,6 @@ namespace Campaigner.UI
             GameMenuState = GameMenuState.BaseView;
             UnityEngine.SceneManagement.SceneManager.LoadScene("MenuScene");
         }
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+
     }
 }

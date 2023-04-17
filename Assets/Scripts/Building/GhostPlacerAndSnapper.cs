@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using Campaigner.UI;
 using UnityEngine;
@@ -19,7 +21,7 @@ public class GhostPlacerAndSnapper : MonoBehaviour
     
     private Quaternion _targetRotation;
     private string previousObjectName = "";
-    
+
     private void Start()
     {
         if (_mainCam == null)
@@ -36,16 +38,36 @@ public class GhostPlacerAndSnapper : MonoBehaviour
     {
         _ghostObject = ghostObject;
         _ghostObjectScript = _ghostObject.GetComponent<PlacedObject>();
+        _ghostObjectScript.SpawnSnappingPoints();
+        
+        GameUIManager.Instance.CanSwitchMenuState = false;
 
+        StartCoroutine(RotationWaiter());
+    }
+    
+    private void CheckRotation()
+    {
         if (_ghostObjectScript.ObjectName == previousObjectName)
         {
             _ghostObject.transform.rotation = _targetRotation;
             _targetRotation = Quaternion.identity;
         }
-        
-        GameUIManager.Instance.CanSwitchMenuState = false;
     }
-    
+
+    /// <summary>
+    /// Wait for snapping points to be generated before checking rotation
+    /// </summary>
+    /// <returns></returns>
+    private IEnumerator RotationWaiter()
+    {
+        while (!_ghostObjectScript.snappingPointsGenerator.doneSpawning)
+        {
+            yield return null;
+        }
+
+        CheckRotation();
+    }
+
     /// <summary>
     /// Reset function to clear the ghost object
     /// </summary>
@@ -92,9 +114,9 @@ public class GhostPlacerAndSnapper : MonoBehaviour
             this.enabled = false;
         }
         
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetKey(KeyCode.R))
         {
-            _ghostObject.transform.Rotate(0, 90, 0);
+            _ghostObject.transform.Rotate(0, 0.25f, 0);
         }
     }
 
@@ -196,7 +218,7 @@ public class GhostPlacerAndSnapper : MonoBehaviour
             return null;
         }
         
-        List<GameObject> snapPoints = placedObject.GetComponent<PlacedObject>().snappingPointsGenerator.snapPoints;
+        List<GameObject> snapPoints = placedObject.GetComponent<PlacedObject>().GetSnapPoints();
         return ClosestListObjectToVector(snapPoints, position);
     }
 

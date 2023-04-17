@@ -136,14 +136,32 @@ public class BuildingManager : MonoBehaviour
         }
         
         go.transform.position = position;
-        
-        
-        go.transform.rotation = rotation;
         go.transform.localScale = scale;
         
-        go.GetComponent<PlacedObject>().ObjectPlaced(objectName);
+        PlacedObject placedObject = go.GetComponent<PlacedObject>();
+        placedObject.ObjectPlaced(objectName);
+        placedObject.SpawnSnappingPoints();
         
+        StartCoroutine(HandleRotation(go, placedObject, rotation));
+
         UpdateWorldBounds(position);
+    }
+
+    /// <summary>
+    /// Sets the rotation of the object after the snapping points have been spawned
+    /// </summary>
+    /// <param name="go"></param>
+    /// <param name="po"></param>
+    /// <param name="rotation"></param>
+    /// <returns></returns>
+    private IEnumerator HandleRotation(GameObject go, PlacedObject po, Quaternion rotation)
+    {
+        while (!po.snappingPointsGenerator.doneSpawning)
+        {
+            yield return null;
+        }
+        
+        go.transform.rotation = rotation;
     }
 
     /// <summary>
@@ -156,11 +174,16 @@ public class BuildingManager : MonoBehaviour
         {
             ghostPlacer.ClearGhostObject();
         }
-            
         
         GameObject go = Instantiate(placeableObjectsDict[objectName]);
         go.name = objectName;
-        go.GetComponent<PlacedObject>().ObjectPlaced(objectName, true);
+
+        go.tag = "GhostObject";
+        
+        PlacedObject placedObject = go.GetComponent<PlacedObject>();
+        
+        placedObject.ObjectPlaced(objectName, true);
+
         go.GetComponent<Renderer>().material = ghostMaterial;
         
 

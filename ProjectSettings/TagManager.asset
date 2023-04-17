@@ -8,6 +8,7 @@ TagManager:
   - Selectable
   - SnapPoint
   - FocusPoint
+  - GhostObject
   layers:
   - Default
   - TransparentFX

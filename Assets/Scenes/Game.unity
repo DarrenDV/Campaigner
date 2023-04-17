@@ -6974,7 +6974,9 @@ MonoBehaviour:
   placeableObjects: []
   ghostMaterial: {fileID: 2100000, guid: 16f175423da1e7848a73fe2dfca0b64e, type: 2}
   _parent: {fileID: 0}
+  ghostPlacer: {fileID: 0}
   spawnedObjects: []
+  DebugSnapPoints: 1
 --- !u!4 &3738982165629407941
 Transform:
   m_ObjectHideFlags: 0

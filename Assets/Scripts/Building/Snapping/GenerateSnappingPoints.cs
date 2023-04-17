@@ -10,6 +10,11 @@ public class GenerateSnappingPoints : MonoBehaviour
      */
     
     public List<GameObject> snapPoints = new List<GameObject>();
+
+    /// <summary>
+    /// Used to check if the snapping points have been generated, allowing the rotation to be set
+    /// </summary>
+    public bool doneSpawning = false;
     
     void Start()
     {
@@ -85,5 +90,7 @@ public class GenerateSnappingPoints : MonoBehaviour
             
             snapPoints.Add(snapPoint);
         }
+
+        doneSpawning = true;
     }
 }

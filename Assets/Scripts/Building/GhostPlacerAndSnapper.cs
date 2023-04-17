@@ -17,6 +17,8 @@ public class GhostPlacerAndSnapper : MonoBehaviour
     
     public bool hasSnapped = false;
     
+    private Quaternion _targetRotation;
+    private string previousObjectName = "";
     
     private void Start()
     {
@@ -35,6 +37,12 @@ public class GhostPlacerAndSnapper : MonoBehaviour
         _ghostObject = ghostObject;
         _ghostObjectScript = _ghostObject.GetComponent<PlacedObject>();
 
+        if (_ghostObjectScript.ObjectName == previousObjectName)
+        {
+            _ghostObject.transform.rotation = _targetRotation;
+            _targetRotation = Quaternion.identity;
+        }
+        
         GameUIManager.Instance.CanSwitchMenuState = false;
     }
     
@@ -43,6 +51,9 @@ public class GhostPlacerAndSnapper : MonoBehaviour
     /// </summary>
     public void ClearGhostObject()
     {
+        previousObjectName = _ghostObjectScript.ObjectName;
+        _targetRotation = _ghostObject.transform.rotation;
+        
         Destroy(_ghostObject);
         _ghostObjectScript = null;
         _ghostObject = null;
@@ -95,7 +106,7 @@ public class GhostPlacerAndSnapper : MonoBehaviour
     {
         _closestOtherSnapPoint = ClosestPlacedObjectSnapPoint(ClosestPlacedObject(position), position);
         
-        if(_closestOtherSnapPoint == null)
+        if(_closestOtherSnapPoint == null || _ghostObjectScript == null || _ghostObjectScript.GetSnapPoints() == null)
         {
             return;
         }

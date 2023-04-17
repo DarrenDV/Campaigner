@@ -18,29 +18,33 @@ public class PlacedObject : NetworkBehaviour
     
     [SyncVar] public string ObjectName;
     public string notes;
+    public int kak = 1000;
     
     public GenerateSnappingPoints snappingPointsGenerator;
 
     private void Start()
     {
         snappingPointsGenerator = gameObject.AddComponent<GenerateSnappingPoints>();
-        BuildingManager.Instance.spawnedObjects.Add(gameObject);
-
-        if (!BuildingManager.Instance.ghostPlacer.GetGhostObject() == this.gameObject)
-        {
-            transform.SetParent(BuildingManager.Instance._parent.transform);
-            gameObject.tag = "Selectable";
-        }
-        
     }
     
-    public void ObjectPlaced()
+    public void ObjectPlaced(string name, bool ghost = false)
     {
-        snappingPointsGenerator = GetComponent<GenerateSnappingPoints>();
+        ObjectName = name;
+
+        if (ghost) return;
+
+        BuildingManager.Instance.spawnedObjects.Add(gameObject);
+        transform.SetParent(BuildingManager.Instance._parent.transform);
+        gameObject.tag = "Selectable";
     }
 
     public List<GameObject> GetSnapPoints()
     {
+        if (snappingPointsGenerator == null)
+        {
+            return new List<GameObject>();
+        }
+        
         return snappingPointsGenerator.snapPoints;
     }
 }

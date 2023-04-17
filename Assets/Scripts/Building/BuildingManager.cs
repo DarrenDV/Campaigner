@@ -90,7 +90,9 @@ public class BuildingManager : MonoBehaviour
         }
 
         ghostPlacer.ClearGhostObject();
-        ghostPlacer.enabled = false;
+        //ghostPlacer.enabled = false;
+        
+        SpawnGhostObject(go.name);
     }
 
     /// <summary>
@@ -139,6 +141,8 @@ public class BuildingManager : MonoBehaviour
         go.transform.rotation = rotation;
         go.transform.localScale = scale;
         
+        go.GetComponent<PlacedObject>().ObjectPlaced(objectName);
+        
         UpdateWorldBounds(position);
     }
 
@@ -156,6 +160,7 @@ public class BuildingManager : MonoBehaviour
         
         GameObject go = Instantiate(placeableObjectsDict[objectName]);
         go.name = objectName;
+        go.GetComponent<PlacedObject>().ObjectPlaced(objectName, true);
         go.GetComponent<Renderer>().material = ghostMaterial;
         
 

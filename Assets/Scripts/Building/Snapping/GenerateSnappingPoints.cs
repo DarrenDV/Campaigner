@@ -56,39 +56,41 @@ public class GenerateSnappingPoints : MonoBehaviour
             snapPoint.AddComponent<BoxCollider>();
             snapPoint.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             snapPoint.transform.SetParent(transform);
-            SnapPoint info = snapPoint.AddComponent<SnapPoint>();
-
-            switch (count)
-            {
-                case 0:
-                    info.snapPointType = SnapPointType.Top;
-                    break;
-                
-                case 1:
-                    info.snapPointType = SnapPointType.Bottom;
-                    break;
-                
-                case 2:
-                    info.snapPointType = SnapPointType.Right;
-                    break;
-                
-                case 3:
-                    info.snapPointType = SnapPointType.Left;
-                    break;
-                
-                case 4:
-                    info.snapPointType = SnapPointType.Front;
-                    break;
-                
-                case 5:
-                    info.snapPointType = SnapPointType.Back;
-                    break;
-            }
+            // SnapPoint info = snapPoint.AddComponent<SnapPoint>();
+            //
+            // switch (count)
+            // {
+            //     case 0:
+            //         info.snapPointType = SnapPointType.Top;
+            //         break;
+            //     
+            //     case 1:
+            //         info.snapPointType = SnapPointType.Bottom;
+            //         break;
+            //     
+            //     case 2:
+            //         info.snapPointType = SnapPointType.Right;
+            //         break;
+            //     
+            //     case 3:
+            //         info.snapPointType = SnapPointType.Left;
+            //         break;
+            //     
+            //     case 4:
+            //         info.snapPointType = SnapPointType.Front;
+            //         break;
+            //     
+            //     case 5:
+            //         info.snapPointType = SnapPointType.Back;
+            //         break;
+            // }
             
             count++;
             
             
             snapPoints.Add(snapPoint);
+            
+            Debug.Log("Position = " + snapPoint.transform.position);
         }
 
         doneSpawning = true;

@@ -27,7 +27,6 @@ public class PlacedObject : NetworkBehaviour
         {
             transform.SetParent(BuildingManager.Instance._parent.transform);
         }
-        
     }
     
     public void ObjectPlaced(string name, bool ghost = false)

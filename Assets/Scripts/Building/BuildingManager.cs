@@ -145,6 +145,11 @@ public class BuildingManager : MonoBehaviour
         StartCoroutine(HandleRotation(go, placedObject, rotation));
 
         UpdateWorldBounds(position);
+
+        if (CustomNetworkManager.Instance != null)
+        {
+            NetworkCommands.Instance.RpcItemSpawned(go);
+        }
     }
 
     /// <summary>

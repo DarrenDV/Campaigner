@@ -12,6 +12,21 @@ namespace Campaigner.UI
         public event Action<GameMenuState> OnGameMenuStateChanged;
         
         public bool CanSwitchMenuState { get; set; } = true;
+
+        public event Action<bool> OnGamePausedChanged;
+        
+        private bool _gamePaused;
+        
+        public bool GamePaused
+        {
+            get => _gamePaused;
+            set
+            {
+                _gamePaused = value;
+                OnGamePausedChanged?.Invoke(_gamePaused);
+            }
+        }
+        
         
         private GameMenuState _gameMenuState;
         public GameMenuState GameMenuState
@@ -62,10 +77,12 @@ namespace Campaigner.UI
             switch (GameMenuState)
             {
                 case GameMenuState.BaseView:
+                    GamePaused = true;
                     GameMenuState = GameMenuState.EscMenu;
                     break;
                 
                 case GameMenuState.EscMenu:
+                    GamePaused = false;
                     GameMenuState = GameMenuState.BaseView;
                     break;
                 

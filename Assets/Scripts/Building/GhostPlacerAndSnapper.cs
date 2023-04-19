@@ -8,6 +8,7 @@ public class GhostPlacerAndSnapper : MonoBehaviour
 {
     [SerializeField] private float snappingRadius = 10f;
     [SerializeField] private int _targetHeight = 0;
+    private float _targetHeightfloat = 0;
     [SerializeField] private GameObject _closestOtherSnapPoint; //this is only serialized for debugging purposes
     [SerializeField] private GameObject _closestOwnSnapPoint; //this is only serialized for debugging purposes
 
@@ -84,9 +85,14 @@ public class GhostPlacerAndSnapper : MonoBehaviour
     
     private void HandleInput()
     {
-        if (Input.mouseScrollDelta.y != 0)
+        if (Input.GetKey(KeyCode.Space))
         {
-            _targetHeight += (int) Input.mouseScrollDelta.y;
+            AdjustTargetHeight(1);
+        }
+
+        if (Input.GetKey(KeyCode.LeftControl))
+        {
+            AdjustTargetHeight(-1);
         }
         
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -99,6 +105,12 @@ public class GhostPlacerAndSnapper : MonoBehaviour
         {
             _ghostObject.transform.Rotate(0, 0.25f, 0);
         }
+    }
+    
+    private void AdjustTargetHeight(int dir)
+    {
+        _targetHeightfloat += dir * 40f * Time.deltaTime; //Represents the same speed as camera speed, should be changed to a variable or linked to the camera speed
+        _targetHeight = (int) _targetHeightfloat;
     }
 
     /// <summary>

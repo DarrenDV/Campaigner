@@ -15,16 +15,27 @@ public class GenerateSnappingPoints : MonoBehaviour
     
     void Start()
     {
-        po = GetComponent<PlacedObject>();   
-        
-        GenerateFacePoints();
+        po = GetComponent<PlacedObject>();
+
+        StartCoroutine(GenerateFacePoints());
     }
     
     /// <summary>
     /// Generates Snapping points on the center of each face
     /// </summary>
-    void GenerateFacePoints()
+    private IEnumerator GenerateFacePoints()
     {
+        while(po == null)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+        
+        while(po.ObjectName == null || po.ObjectName == "")
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+        
+        
         /*
          *  We need to use a temporary gameobject because we need a version with a nullified rotation for correct snapping point generation.
          *  We cannot temporarily set the rotation of own gameobject because clients have no authority over it.
@@ -112,6 +123,8 @@ public class GenerateSnappingPoints : MonoBehaviour
         }
 
         Destroy(temp);
+        
+        StopCoroutine(GenerateFacePoints());
         
     }
 }

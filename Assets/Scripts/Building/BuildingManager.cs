@@ -140,7 +140,7 @@ public class BuildingManager : MonoBehaviour
         go.transform.localScale = scale;
         
         PlacedObject placedObject = go.GetComponent<PlacedObject>();
-        placedObject.ObjectPlaced(objectName);
+        placedObject.SetObjectName(objectName);
         placedObject.SpawnSnappingPoints();
         
         UpdateWorldBounds(position);
@@ -164,7 +164,7 @@ public class BuildingManager : MonoBehaviour
         
         PlacedObject placedObject = go.GetComponent<PlacedObject>();
         
-        placedObject.ObjectPlaced(objectName, true);
+        placedObject.SetObjectName(objectName);
 
         go.GetComponent<Renderer>().material = ghostMaterial;
         

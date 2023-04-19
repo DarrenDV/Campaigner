@@ -26,6 +26,8 @@ public class PlacedObject : NetworkBehaviour
         if (!gameObject.CompareTag("GhostObject"))
         {
             transform.SetParent(BuildingManager.Instance._parent.transform);
+            gameObject.tag = "Selectable";
+            BuildingManager.Instance.spawnedObjects.Add(gameObject);
         }
         
         if(!isOwned)
@@ -34,14 +36,9 @@ public class PlacedObject : NetworkBehaviour
         }
     }
     
-    public void ObjectPlaced(string name, bool ghost = false)
+    public void SetObjectName(string name)
     {
         ObjectName = name;
-
-        if (ghost) return;
-
-        BuildingManager.Instance.spawnedObjects.Add(gameObject);
-        gameObject.tag = "Selectable";
     }
 
     public List<GameObject> GetSnapPoints()

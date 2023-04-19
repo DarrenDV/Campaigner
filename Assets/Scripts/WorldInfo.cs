@@ -1,14 +1,15 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Mirror;
 using UnityEngine;
 
-public class WorldInfo : MonoBehaviour
+public class WorldInfo : NetworkBehaviour
 {
     public static WorldInfo Instance { get; private set; }
 
-    private Vector3 _minBounds = Vector3.zero;
-    private Vector3 _maxBounds = Vector3.zero;
+    [SyncVar] private Vector3 _minBounds = Vector3.zero;
+    [SyncVar] private Vector3 _maxBounds = Vector3.zero;
 
     public event Action OnLoadAction;
     

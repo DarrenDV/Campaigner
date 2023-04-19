@@ -42,30 +42,11 @@ public class GhostPlacerAndSnapper : MonoBehaviour
         
         GameUIManager.Instance.CanSwitchMenuState = false;
 
-        StartCoroutine(RotationWaiter());
-    }
-    
-    private void CheckRotation()
-    {
         if (_ghostObjectScript.ObjectName == previousObjectName)
         {
             _ghostObject.transform.rotation = _targetRotation;
             _targetRotation = Quaternion.identity;
         }
-    }
-
-    /// <summary>
-    /// Wait for snapping points to be generated before checking rotation
-    /// </summary>
-    /// <returns></returns>
-    private IEnumerator RotationWaiter()
-    {
-        while (!_ghostObjectScript.snappingPointsGenerator.doneSpawning)
-        {
-            yield return null;
-        }
-
-        CheckRotation();
     }
 
     /// <summary>

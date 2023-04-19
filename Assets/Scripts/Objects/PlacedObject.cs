@@ -20,12 +20,17 @@ public class PlacedObject : NetworkBehaviour
     public string notes;
 
     public GenerateSnappingPoints snappingPointsGenerator;
-
+    
     private void Start()
     {
         if (!gameObject.CompareTag("GhostObject"))
         {
             transform.SetParent(BuildingManager.Instance._parent.transform);
+        }
+        
+        if(!isOwned)
+        {
+            SpawnSnappingPoints();
         }
     }
     

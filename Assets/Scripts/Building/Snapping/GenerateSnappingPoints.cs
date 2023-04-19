@@ -10,14 +10,13 @@ public class GenerateSnappingPoints : MonoBehaviour
      */
     
     public List<GameObject> snapPoints = new List<GameObject>();
-
-    /// <summary>
-    /// Used to check if the snapping points have been generated, allowing the rotation to be set
-    /// </summary>
-    public bool doneSpawning = false;
+    
+    private PlacedObject po;
     
     void Start()
     {
+        po = GetComponent<PlacedObject>();   
+        
         GenerateFacePoints();
     }
     
@@ -26,7 +25,17 @@ public class GenerateSnappingPoints : MonoBehaviour
     /// </summary>
     void GenerateFacePoints()
     {
-        Bounds bounds = GetComponent<Renderer>().bounds;
+        /*
+         *  We need to use a temporary gameobject because we need a version with a nullified rotation for correct snapping point generation.
+         *  We cannot temporarily set the rotation of own gameobject because clients have no authority over it.
+         *  We also need to destroy the script because we don't want to generate snapping points for the temporary gameobject, this could cause an infinite loop.
+         */
+        
+        GameObject temp = Instantiate(BuildingManager.Instance.placeableObjectsDict[po.ObjectName], transform.position, transform.rotation); 
+        Destroy(temp.GetComponent<GenerateSnappingPoints>());
+        temp.transform.rotation = Quaternion.identity;
+        
+        Bounds bounds = temp.GetComponent<Renderer>().bounds;
         Vector3 center = bounds.center;
         Vector3 extents = bounds.extents;
         Vector3[] points = new Vector3[6];
@@ -55,7 +64,11 @@ public class GenerateSnappingPoints : MonoBehaviour
             snapPoint.transform.position = point;
             snapPoint.AddComponent<BoxCollider>();
             snapPoint.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
-            snapPoint.transform.SetParent(transform);
+            
+            snapPoint.transform.SetParent(temp.transform);
+            
+            // Snappoint info is not used for anything at the moment, but it could be used to determine what type of snap point it is, until then it is commented out
+            
             // SnapPoint info = snapPoint.AddComponent<SnapPoint>();
             //
             // switch (count)
@@ -89,10 +102,16 @@ public class GenerateSnappingPoints : MonoBehaviour
             
             
             snapPoints.Add(snapPoint);
-            
-            Debug.Log("Position = " + snapPoint.transform.position);
+        }
+        
+        temp.transform.rotation = transform.rotation;
+        
+        foreach(GameObject snapPoint in snapPoints)
+        {
+            snapPoint.transform.SetParent(transform);
         }
 
-        doneSpawning = true;
+        Destroy(temp);
+        
     }
 }

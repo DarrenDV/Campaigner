@@ -37,12 +37,4 @@ public class NetworkCommands : NetworkBehaviour
         BuildingManager.Instance.PlaceObject(objectName, position, rotation, scale);
     }
 
-    
-    [ClientRpc]
-    public void RpcItemSpawned(GameObject go)
-    {
-        if (isServer) return;
-        go.GetComponent<PlacedObject>().SpawnSnappingPoints();
-    }
-    
 }

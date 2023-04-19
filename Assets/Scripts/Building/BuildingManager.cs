@@ -136,37 +136,14 @@ public class BuildingManager : MonoBehaviour
         }
         
         go.transform.position = position;
+        go.transform.rotation = rotation;
         go.transform.localScale = scale;
         
         PlacedObject placedObject = go.GetComponent<PlacedObject>();
         placedObject.ObjectPlaced(objectName);
         placedObject.SpawnSnappingPoints();
         
-        StartCoroutine(HandleRotation(go, placedObject, rotation));
-
         UpdateWorldBounds(position);
-
-        if (CustomNetworkManager.Instance != null)
-        {
-            NetworkCommands.Instance.RpcItemSpawned(go);
-        }
-    }
-
-    /// <summary>
-    /// Sets the rotation of the object after the snapping points have been spawned
-    /// </summary>
-    /// <param name="go"></param>
-    /// <param name="po"></param>
-    /// <param name="rotation"></param>
-    /// <returns></returns>
-    private IEnumerator HandleRotation(GameObject go, PlacedObject po, Quaternion rotation)
-    {
-        while (!po.snappingPointsGenerator.doneSpawning)
-        {
-            yield return null;
-        }
-        
-        go.transform.rotation = rotation;
     }
 
     /// <summary>

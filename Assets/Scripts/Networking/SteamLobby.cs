@@ -122,11 +122,7 @@ public class SteamLobby : MonoBehaviour
             
             LeaveLobby();
             
-            if(NetworkServer.active)
-            {
-                CustomNetworkManager.Instance.StopHost();
-            }
-            else if (NetworkClient.isConnected)
+            if (NetworkClient.isConnected)
             {
                 CustomNetworkManager.Instance.StopClient();
             }

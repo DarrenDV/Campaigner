@@ -27,7 +27,7 @@ Snapping points are generated using the bounds of each mesh, defined by it's ren
 We use these bounds to generate 6 snapping points, each representing the center of a face of an imaginary cube around the object. 
 
 <br>
-When a ghost object comes near an object with snapping points, it goes through the following steps, each of which can be found in GenerateSnappingPoints.cs:
+When a ghost object comes near an object with snapping points, it goes through the following steps, each of which can be found in GhostPlacerAndSnapper.cs:
 <br>
 
 1. Find the nearest object, this will be the object we're attempting to snap to.
